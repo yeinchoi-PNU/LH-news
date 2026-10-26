@@ -8,11 +8,13 @@
   :root {
     --bg: #f6f7f9; --card: #ffffff; --text: #1d2228; --sub: #67707a;
     --line: #e3e6ea; --accent: #0b6e4f; --accent-soft: #e3f2ec; --star: #e0a100;
+    --hot: #c2410c; --hot-soft: #fdeee4;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #15181c; --card: #1e2227; --text: #e8eaed; --sub: #9aa3ad;
       --line: #30353c; --accent: #4cc39a; --accent-soft: #1d3a30; --star: #f2c94c;
+      --hot: #fb923c; --hot-soft: #3a2518;
     }
   }
   * { box-sizing: border-box; }
@@ -22,8 +24,15 @@
   }
   header { background: var(--card); border-bottom: 1px solid var(--line); padding: 20px 16px 0; }
   .wrap { max-width: 960px; margin: 0 auto; }
+  .head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px; }
   h1 { margin: 0; font-size: 22px; }
   .updated { color: var(--sub); font-size: 13px; margin: 4px 0 14px; }
+  .datenav { display: flex; gap: 4px; align-items: center; margin-bottom: 14px; }
+  .datenav button, .datenav select {
+    font: inherit; font-size: 14px; padding: 6px 10px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer;
+  }
+  .datenav button:disabled { opacity: .35; cursor: default; }
   .tabs { display: flex; gap: 4px; overflow-x: auto; }
   .tab {
     border: 0; background: none; color: var(--sub); font: inherit; font-size: 14px;
@@ -32,6 +41,49 @@
   .tab.on { color: var(--accent); border-color: var(--accent); font-weight: 700; }
   .tab small { opacity: .7; }
   main { padding: 16px; }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+  .box h2 { font-size: 16px; margin: 0 0 4px; }
+  .box .desc { font-size: 12px; color: var(--sub); margin: 0 0 12px; }
+  .meta { font-size: 12px; color: var(--sub); }
+
+  /* 주요 키워드 카드 */
+  .kwgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .kw {
+    text-align: left; font: inherit; color: var(--text); cursor: pointer;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 10px 12px;
+  }
+  .kw:hover { border-color: var(--accent); }
+  .kw b { font-size: 17px; }
+  .kw .cnt { font-size: 12px; color: var(--sub); margin-left: 4px; }
+  .kw .co { font-size: 12px; color: var(--sub); margin-top: 4px; }
+  .kw .co span { color: var(--accent); }
+
+  /* 이슈 */
+  .issue { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .issue:last-child { border-bottom: 0; }
+  .rank { font-weight: 800; color: var(--accent); min-width: 18px; font-size: 16px; }
+  .body { flex: 1; min-width: 0; }
+  .body a { color: var(--text); text-decoration: none; font-weight: 600; }
+  .body a:hover { text-decoration: underline; }
+  .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; align-items: center; }
+  .badge { font-size: 11px; border-radius: 999px; padding: 1px 8px; background: var(--accent-soft); color: var(--accent); }
+  .badge.hot { background: var(--hot-soft); color: var(--hot); font-weight: 700; }
+  details.others { margin-top: 6px; font-size: 13px; }
+  details.others summary { cursor: pointer; color: var(--sub); }
+  details.others ul { margin: 6px 0 0; padding-left: 18px; }
+  details.others li { margin: 2px 0; }
+  details.others a { font-weight: 400; }
+  .kwsec h3 { font-size: 15px; margin: 18px 0 2px; }
+  .kwsec h3:first-child { margin-top: 0; }
+  .catgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px 20px; }
+  .catgrid h3 { font-size: 14px; margin: 0 0 4px; color: var(--accent); }
+  .catgrid .issue { padding: 6px 0; }
+  .catgrid .body a { font-weight: 500; font-size: 14px; }
+  details.how { font-size: 13px; color: var(--sub); }
+  details.how summary { cursor: pointer; font-weight: 700; color: var(--text); }
+  details.how li { margin: 4px 0; }
+
+  /* 기사 목록 */
   .tools { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
   .tools input, .tools select, .tools button {
     font: inherit; font-size: 14px; padding: 8px 10px; border-radius: 8px;
@@ -39,8 +91,12 @@
   }
   .tools input { flex: 1; min-width: 160px; }
   .tools button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
-  .box h2 { font-size: 15px; margin: 0 0 10px; }
+  .cats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chip {
+    border: 1px solid var(--line); background: var(--card); color: var(--sub); font: inherit; font-size: 13px;
+    border-radius: 999px; padding: 4px 12px; cursor: pointer;
+  }
+  .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
   .words { display: flex; flex-wrap: wrap; gap: 6px; }
   .word {
     border: 0; font: inherit; font-size: 13px; cursor: pointer;
@@ -51,10 +107,6 @@
   .item:last-child { border-bottom: 0; }
   .star { border: 0; background: none; font-size: 18px; cursor: pointer; color: var(--line); padding: 0 2px; line-height: 1.2; }
   .star.on { color: var(--star); }
-  .body { flex: 1; min-width: 0; }
-  .body a { color: var(--text); text-decoration: none; font-weight: 600; }
-  .body a:hover { text-decoration: underline; }
-  .meta { font-size: 12px; color: var(--sub); margin-top: 2px; }
   .cat { color: var(--accent); }
   .memo {
     width: 100%; margin-top: 6px; font: inherit; font-size: 13px; padding: 6px 8px;
@@ -62,77 +114,174 @@
   }
   .empty { color: var(--sub); text-align: center; padding: 40px 0; }
   .list { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px 16px 10px; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>LH 취업 이슈노트</h1>
-    <div class="updated" id="updated"></div>
-    <nav class="tabs" id="tabs"></nav>
+    <div class="head">
+      <div>
+        <h1>LH 취업 이슈노트</h1>
+        <div class="updated" id="updated"></div>
+      </div>
+      <div class="datenav" id="datenav">
+        <button id="prev" title="이전 날짜">◀</button>
+        <select id="dateSel"></select>
+        <button id="next" title="다음 날짜">▶</button>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button class="tab on" data-view="brief">오늘의 브리핑</button>
+      <button class="tab" data-view="list">전체 기사</button>
+      <button class="tab" data-view="scrap">★ 스크랩·메모</button>
+    </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <div class="tools">
-    <input id="search" type="search" placeholder="제목 검색 (예: 전세사기, 3기 신도시)">
-    <select id="period">
-      <option value="1">오늘</option>
-      <option value="7" selected>최근 7일</option>
-      <option value="30">최근 30일</option>
-    </select>
-    <button id="onlyStar">★ 스크랩만</button>
+  <!-- 브리핑 -->
+  <div id="brief">
+    <section class="box">
+      <h2>주요 키워드</h2>
+      <p class="desc">최근 24시간 기사에서 많이 나오고, 다른 이슈와 많이 엮이고, 평소보다 늘어난 키워드 · 누르면 아래 이슈로 이동</p>
+      <div class="kwgrid" id="kwgrid"></div>
+    </section>
+
+    <section class="box">
+      <h2>가장 많이 보도된 이슈 TOP 5</h2>
+      <p class="desc">같은 내용의 기사를 하나로 묶고 화제도 순으로 정렬</p>
+      <div id="top"></div>
+    </section>
+
+    <section class="box kwsec">
+      <h2>키워드별 주요 이슈</h2>
+      <p class="desc">키워드마다 화제도 상위 이슈</p>
+      <div id="kwissues"></div>
+    </section>
+
+    <section class="box">
+      <h2>분야별 주요 이슈</h2>
+      <p class="desc">LH 업무 분야별 화제도 상위 3개</p>
+      <div class="catgrid" id="bycat"></div>
+    </section>
+
+    <section class="box">
+      <details class="how">
+        <summary>선정 기준 보기</summary>
+        <ol>
+          <li><b>기사 모으기</b> · 분야별 검색어로 구글 뉴스(최근 2일)와 네이버 뉴스 검색을 하고, 네이버 ‘언론사별 많이 본 뉴스’에서 부동산·공공 관련 기사를 더합니다. 그중 최근 24시간 기사가 분석 표본입니다. 관련 단어(주택·LH·부동산·건설 등)가 없는 기사와 축제·연예 기사는 뺍니다.</li>
+          <li><b>이슈 묶기</b> · 제목의 글자 짝이 절반 넘게 겹치거나 핵심 단어가 3개 이상 겹치면 같은 이슈로 묶습니다. ‘관련 보도 N곳’은 그 이슈를 보도한 언론사 수입니다.</li>
+          <li><b>화제도</b> = 2 × 보도 언론사 수 + 2(구글·네이버 양쪽에 노출) + 8(네이버 많이 본 뉴스에 포함) + 검색 순위 가점(최대 3)</li>
+          <li><b>주요 키워드</b> · 후보 키워드(동의어 포함)마다 점수 = 0.45 × 출현 기사 수 + 0.35 × 연관 중심성(함께 나온 키워드 연결망의 PageRank) + 0.20 × 모멘텀(최근 7일 평균 대비 오늘 출현율, 최대 3배). 각 항목은 최댓값 기준 0~1로 환산합니다. 이미 고른 키워드와 기사가 50% 넘게 겹치면 건너뛰어 서로 다른 주제를 고릅니다.</li>
+          <li><b>함께 많이 쓰인 표현</b> · 그 키워드가 나온 기사 제목에 함께 자주 나온 단어(괄호 안은 기사 수)</li>
+        </ol>
+      </details>
+    </section>
   </div>
 
-  <section class="box">
-    <h2>이 기간에 많이 나온 단어 <span class="meta">누르면 검색됩니다</span></h2>
-    <div class="words" id="words"></div>
-  </section>
-
-  <section class="list" id="list"></section>
+  <!-- 전체 기사 / 스크랩 -->
+  <div id="listView" hidden>
+    <div class="tools">
+      <input id="search" type="search" placeholder="제목 검색 (예: 전세사기, 3기 신도시)">
+      <select id="period">
+        <option value="1">오늘</option>
+        <option value="7" selected>최근 7일</option>
+        <option value="14">최근 14일</option>
+      </select>
+    </div>
+    <div class="cats" id="cats"></div>
+    <section class="box" id="wordsBox">
+      <h2>이 기간에 많이 나온 단어 <span class="meta">누르면 검색됩니다</span></h2>
+      <div class="words" id="words"></div>
+    </section>
+    <section class="list" id="list"></section>
+  </div>
 </main>
 
-<!-- collect.py 가 만든 기사 데이터 -->
+<!-- collect.py 가 만든 기사·브리핑 데이터 -->
 <script src="news-data.js"></script>
 <script>
-  const data = window.NEWS_DATA || { updated: "-", categories: [], articles: [] };
-  const state = { cat: "전체", q: "", days: 7, onlyStar: false };
+  const data = window.NEWS_DATA || { updated: "-", categories: [], articles: [], briefings: {} };
+  const briefings = data.briefings || {};
+  const dates = Object.keys(briefings).sort();
+  const state = { view: "brief", date: dates[dates.length - 1], cat: "전체", q: "", days: 7 };
 
   // 스크랩(★)과 메모는 이 브라우저에만 저장됩니다.
   function load(key) { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } }
   function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch {} }
-  const stars = load("lh-stars");
+  const stars = load("lh-stars");   // { 링크: {title, source, date} }
   const memos = load("lh-memos");
+  for (const k in stars) if (stars[k] === true) stars[k] = { title: k, source: "", date: "" };
 
-  // 단어 집계에서 뺄 흔한 단어들
   const STOP = new Set(["위해","대한","관련","통해","추진","개최","실시","진행","지역","올해","내년","기자","오늘",
     "있는","없는","이번","최대","가장","대해","한다","했다","나선다","속도","확대","지원","사업","발표","공급"]);
 
+  const $ = id => document.getElementById(id);
+  function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
   function fmtDay(d) {
     const dt = new Date(d.slice(0, 10) + "T00:00:00");
     return `${dt.getMonth() + 1}월 ${dt.getDate()}일 (${"일월화수목금토"[dt.getDay()]})`;
   }
 
+  // ── 브리핑 ──
+  function starBtn(a) {
+    return `<button class="star ${stars[a.link] ? "on" : ""}" data-star="${esc(a.link)}"
+      data-title="${esc(a.title)}" data-source="${esc(a.source)}" data-date="${esc(a.date || "")}" title="스크랩">★</button>`;
+  }
+
+  function issueHTML(i, rank, compact) {
+    const others = (i.others || []).length
+      ? `<details class="others"><summary>같은 이슈 다른 보도 ${i.others.length}건</summary><ul>${
+          i.others.map(o => `<li><a href="${esc(o.link)}" target="_blank" rel="noopener">${esc(o.title)}</a> <span class="meta">${esc(o.source)}</span></li>`).join("")
+        }</ul></details>` : "";
+    const badges = compact
+      ? `<div class="meta">${esc(i.source)} · 관련 보도 ${i.count}곳${i.popular ? " · 🔥많이 본 뉴스" : ""}</div>`
+      : `<div class="badges">
+          <span class="meta">${esc(i.source)} · ${esc((i.date || "").slice(5))}</span>
+          <span class="badge">관련 보도 ${i.count}곳</span>
+          <span class="badge">화제도 ${i.hot}</span>
+          ${i.popular ? `<span class="badge hot">🔥 네이버 많이 본 뉴스</span>` : ""}
+          ${(i.origins || []).length > 1 ? `<span class="badge">구글+네이버</span>` : ""}
+        </div>`;
+    return `<div class="issue">
+      ${rank ? `<div class="rank">${rank}</div>` : ""}
+      ${starBtn(i)}
+      <div class="body">
+        <a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>
+        ${badges}
+        ${compact ? "" : others}
+      </div>
+    </div>`;
+  }
+
+  function renderBrief() {
+    const b = briefings[state.date];
+    if (!b) { $("kwgrid").innerHTML = `<div class="empty">브리핑 데이터가 없습니다.</div>`; return; }
+    $("kwgrid").innerHTML = b.keywords.map((k, n) => `
+      <button class="kw" data-goto="kw-${n}">
+        <div class="meta">${esc(k.category)}</div>
+        <b>“${esc(k.name)}”</b><span class="cnt">관련 기사 ${k.count}건</span>
+        <div class="co">${k.co.length ? "함께 많이 쓰인 표현 " + k.co.map(([w, c]) => `<span>${esc(w)}</span>(${c})`).join(", ") : "&nbsp;"}</div>
+      </button>`).join("");
+    $("top").innerHTML = b.top.map((i, n) => issueHTML(i, n + 1)).join("") || `<div class="empty">이슈가 없습니다.</div>`;
+    $("kwissues").innerHTML = b.keywords.map((k, n) => `
+      <h3 id="kw-${n}">“${esc(k.name)}” <span class="meta">관련 기사 ${k.count}건 · 점수 ${k.score} (출현 ${k.hit} · 중심성 ${k.central} · 모멘텀 ${k.momentum}배)</span></h3>
+      ${k.issues.map(i => issueHTML(i)).join("")}`).join("");
+    $("bycat").innerHTML = Object.entries(b.by_category).map(([c, list]) => `
+      <div><h3>${esc(c)}</h3>${list.length ? list.map(i => issueHTML(i, 0, true)).join("") : `<div class="meta">오늘은 큰 이슈가 없어요</div>`}</div>`).join("");
+    $("updated").textContent = `${fmtDay(state.date)} 브리핑 · 분석 기사 ${b.sample}건 → 이슈 ${b.issue_count}개 · 수집 ${b.updated}`;
+  }
+
+  // ── 전체 기사 / 스크랩 ──
   function filtered() {
     const now = new Date();
     const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (state.days - 1));
-    const fromStr = from.toISOString().slice(0, 10);
+    const fromStr = `${from.getFullYear()}-${String(from.getMonth() + 1).padStart(2, "0")}-${String(from.getDate()).padStart(2, "0")}`;
     return data.articles.filter(a =>
       a.date.slice(0, 10) >= fromStr &&
       (state.cat === "전체" || a.category === state.cat) &&
-      (!state.q || a.title.includes(state.q)) &&
-      (!state.onlyStar || stars[a.link])
-    );
-  }
-
-  function renderTabs(list) {
-    const counts = {};
-    list.forEach(a => counts[a.category] = (counts[a.category] || 0) + 1);
-    const cats = ["전체", ...data.categories];
-    document.getElementById("tabs").innerHTML = cats.map(c => {
-      const n = c === "전체" ? list.length : (counts[c] || 0);
-      return `<button class="tab ${c === state.cat ? "on" : ""}" data-cat="${c}">${c} <small>${n}</small></button>`;
-    }).join("");
+      (!state.q || a.title.includes(state.q)));
   }
 
   function renderWords(list) {
@@ -143,65 +292,95 @@
       words.forEach(w => { if (w.length >= 2 && !STOP.has(w)) count[w] = (count[w] || 0) + 1; });
     });
     const top = Object.entries(count).sort((a, b) => b[1] - a[1]).slice(0, 24);
-    document.getElementById("words").innerHTML = top.length
-      ? top.map(([w, n]) => `<button class="word" data-word="${w}">${w} ${n}</button>`).join("")
+    $("words").innerHTML = top.length
+      ? top.map(([w, n]) => `<button class="word" data-word="${esc(w)}">${esc(w)} ${n}</button>`).join("")
       : `<span class="meta">기사가 없습니다</span>`;
   }
 
-  function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+  function itemHTML(a) {
+    const on = stars[a.link];
+    return `<div class="item">
+      ${starBtn(a)}
+      <div class="body">
+        <a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a>
+        <div class="meta">${a.category ? `<span class="cat">${esc(a.category)}</span> · ` : ""}${esc(a.source)}${a.date ? " · " + esc(a.date.slice(5)) : ""}${a.popular ? " · 🔥많이 본 뉴스" : ""}</div>
+        ${on ? `<textarea class="memo" data-memo="${esc(a.link)}" rows="2" placeholder="면접에서 쓸 내 생각, LH와의 연관성 메모">${esc(memos[a.link] || "")}</textarea>` : ""}
+      </div>
+    </div>`;
+  }
 
-  function renderList(list) {
-    if (!list.length) {
-      document.getElementById("list").innerHTML = `<div class="empty">조건에 맞는 기사가 없습니다.</div>`;
+  function renderList() {
+    const scrap = state.view === "scrap";
+    $("cats").hidden = $("wordsBox").hidden = $("period").hidden = scrap;
+    let list;
+    if (scrap) {
+      list = Object.entries(stars).map(([link, s]) => ({ link, ...s }))
+        .filter(a => !state.q || a.title.includes(state.q))
+        .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      $("list").innerHTML = list.length ? list.map(itemHTML).join("")
+        : `<div class="empty">★를 누른 기사가 여기에 모입니다. 면접 대비 메모도 함께 저장돼요.</div>`;
       return;
     }
+    const cat = state.cat; state.cat = "전체";
+    const all = filtered(); state.cat = cat;
+    list = filtered();
+    const counts = {};
+    all.forEach(a => counts[a.category] = (counts[a.category] || 0) + 1);
+    $("cats").innerHTML = ["전체", ...data.categories].map(c =>
+      `<button class="chip ${c === state.cat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)} ${c === "전체" ? all.length : (counts[c] || 0)}</button>`).join("");
+    renderWords(list);
+    if (!list.length) { $("list").innerHTML = `<div class="empty">조건에 맞는 기사가 없습니다.</div>`; return; }
     let html = "", lastDay = "";
-    list.forEach(a => {
+    list.slice(0, 400).forEach(a => {
       const day = a.date.slice(0, 10);
       if (day !== lastDay) { html += `<div class="day">${fmtDay(day)}</div>`; lastDay = day; }
-      const on = stars[a.link];
-      html += `<div class="item">
-        <button class="star ${on ? "on" : ""}" data-star="${esc(a.link)}" title="스크랩">★</button>
-        <div class="body">
-          <a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a>
-          <div class="meta"><span class="cat">${a.category}</span> · ${esc(a.source)} · ${a.date.slice(11)}</div>
-          ${on ? `<textarea class="memo" data-memo="${esc(a.link)}" rows="2" placeholder="면접에서 쓸 내 생각, LH와의 연관성 메모">${esc(memos[a.link] || "")}</textarea>` : ""}
-        </div>
-      </div>`;
+      html += itemHTML(a);
     });
-    document.getElementById("list").innerHTML = html;
+    $("list").innerHTML = html;
   }
 
   function render() {
-    // 탭 숫자는 분야 필터를 빼고 계산
-    const cat = state.cat; state.cat = "전체";
-    const all = filtered(); state.cat = cat;
-    const list = filtered();
-    renderTabs(all);
-    renderWords(list);
-    renderList(list);
-    document.getElementById("onlyStar").classList.toggle("on", state.onlyStar);
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.view === state.view));
+    $("brief").hidden = state.view !== "brief";
+    $("listView").hidden = state.view === "brief";
+    $("datenav").hidden = state.view !== "brief";
+    if (state.view === "brief") renderBrief();
+    else {
+      $("updated").textContent = `마지막 수집: ${data.updated} · 보관 기사 ${data.articles.length}건`;
+      renderList();
+    }
+    const i = dates.indexOf(state.date);
+    $("prev").disabled = i <= 0;
+    $("next").disabled = i >= dates.length - 1;
   }
 
-  document.getElementById("updated").textContent =
-    `마지막 수집: ${data.updated} · 보관 기사 ${data.articles.length}건`;
-  document.getElementById("tabs").onclick = e => {
-    const b = e.target.closest("[data-cat]"); if (b) { state.cat = b.dataset.cat; render(); }
+  // ── 이벤트 ──
+  $("dateSel").innerHTML = dates.slice().reverse().map(d => `<option value="${d}">${fmtDay(d)}</option>`).join("");
+  $("dateSel").value = state.date;
+  $("dateSel").onchange = e => { state.date = e.target.value; render(); };
+  $("prev").onclick = () => { state.date = dates[dates.indexOf(state.date) - 1]; $("dateSel").value = state.date; render(); };
+  $("next").onclick = () => { state.date = dates[dates.indexOf(state.date) + 1]; $("dateSel").value = state.date; render(); };
+  document.querySelector(".tabs").onclick = e => {
+    const b = e.target.closest("[data-view]"); if (b) { state.view = b.dataset.view; render(); }
   };
-  document.getElementById("search").oninput = e => { state.q = e.target.value.trim(); render(); };
-  document.getElementById("period").onchange = e => { state.days = +e.target.value; render(); };
-  document.getElementById("onlyStar").onclick = () => { state.onlyStar = !state.onlyStar; render(); };
-  document.getElementById("words").onclick = e => {
+  $("cats").onclick = e => { const b = e.target.closest("[data-cat]"); if (b) { state.cat = b.dataset.cat; render(); } };
+  $("search").oninput = e => { state.q = e.target.value.trim(); render(); };
+  $("period").onchange = e => { state.days = +e.target.value; render(); };
+  $("words").onclick = e => {
     const b = e.target.closest("[data-word]"); if (!b) return;
-    document.getElementById("search").value = b.dataset.word; state.q = b.dataset.word; render();
+    $("search").value = b.dataset.word; state.q = b.dataset.word; render();
   };
-  document.getElementById("list").onclick = e => {
+  $("kwgrid").onclick = e => {
+    const b = e.target.closest("[data-goto]"); if (b) $(b.dataset.goto).scrollIntoView({ behavior: "smooth" });
+  };
+  document.querySelector("main").addEventListener("click", e => {
     const b = e.target.closest("[data-star]"); if (!b) return;
     const k = b.dataset.star;
-    if (stars[k]) delete stars[k]; else stars[k] = true;
+    if (stars[k]) delete stars[k];
+    else stars[k] = { title: b.dataset.title, source: b.dataset.source, date: b.dataset.date };
     save("lh-stars", stars); render();
-  };
-  document.getElementById("list").oninput = e => {
+  });
+  $("list").oninput = e => {
     const t = e.target.closest("[data-memo]"); if (!t) return;
     memos[t.dataset.memo] = t.value; save("lh-memos", memos);
   };
