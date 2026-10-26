@@ -1,5 +1,5 @@
 # LH 취업 준비용 뉴스 수집·분석기
-# 1) 구글 뉴스 + 네이버(검색 API, 많이 본 뉴스)에서 기사를 모으고
+# 1) 구글 뉴스 + 네이버(뉴스 검색 화면, 많이 본 뉴스)에서 기사를 모으고
 # 2) 제목이 비슷한 기사를 하나의 '이슈'로 묶은 뒤
 # 3) '화제도' 점수로 중요한 이슈를 고르고
 # 4) 주요 키워드를 골라 news-data.js 파일로 저장합니다.
@@ -7,9 +7,9 @@
 
 import html
 import json
-import math
 import os
 import re
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -79,12 +79,13 @@ N_KEYWORDS = 8          # 주요 키워드 개수
 ISSUES_PER_KEYWORD = 5  # 키워드별로 보여줄 이슈 수
 KEEP_DAYS = 14          # 며칠치 기사를 보관할지
 KEEP_BRIEFINGS = 60     # 며칠치 브리핑을 보관할지
+NAVER_PAGES = 2         # 네이버 검색 결과를 몇 쪽까지 읽을지 (1쪽 = 약 10개 이슈)
 
 KST = timezone(timedelta(hours=9))
 DATA_FILE = Path(__file__).parent / "news-data.js"
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"}
 
-# 네이버 검색 API 키 (GitHub 'Secrets'에 넣어두면 자동으로 쓰입니다. 없으면 건너뜁니다)
+# 네이버 검색 API 키 (예비용. 넣어두면 검색 화면 읽기 대신 API를 씁니다)
 NAVER_ID = os.environ.get("NAVER_CLIENT_ID", "")
 NAVER_SECRET = os.environ.get("NAVER_CLIENT_SECRET", "")
 
@@ -136,18 +137,79 @@ def fetch_google(query):
     return items
 
 
+def press_from_url(url):
+    host = urllib.parse.urlparse(url).netloc.removeprefix("www.")
+    return next((name for dom, name in PRESS.items() if host.endswith(dom)), host)
+
+
+def clean(text):
+    text = re.sub(r"<[^>]+>", "", text).replace("새 창 열림", "")
+    return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
+def parse_when(text, now):
+    # "3시간 전", "2일 전", "2026.10.24." 같은 표기를 날짜로 바꿉니다.
+    m = re.search(r"(\d+)\s*(분|시간|일)\s*전", text)
+    if m:
+        n, unit = int(m.group(1)), m.group(2)
+        return now - timedelta(minutes=n if unit == "분" else n * 60 if unit == "시간" else n * 1440)
+    m = re.search(r"(20\d\d)\.(\d{1,2})\.(\d{1,2})\.", text)
+    if m:
+        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), 9, tzinfo=KST)
+    return now
+
+
+def fetch_naver_web(query):
+    # 네이버 뉴스 검색 화면(최근 1일, 관련도순)을 읽습니다.
+    # 화면은 [언론사 → 대표 기사 → 묶인 기사들 → '관련뉴스 N건'] 순서로 되어 있습니다.
+    # 네이버가 화면 구조를 바꾸면 여기서 기사가 0건이 될 수 있습니다.
+    now = datetime.now(KST)
+    items, rank = [], 0
+    for page in range(NAVER_PAGES):
+        url = ("https://search.naver.com/search.naver?where=news&sort=0&pd=4&start="
+               + str(1 + page * 10) + "&query=" + urllib.parse.quote(query))
+        page_html = get(url, {"Accept-Language": "ko-KR,ko;q=0.9"})
+        cluster, prev_prof = None, False
+        for m in re.finditer(r'<a\s[^>]*?href="([^"]+)"[^>]*?data-heatmap-target="(\.[a-z]+)"[^>]*>(.*?)</a>',
+                             page_html, re.S):
+            href, mark, text = html.unescape(m.group(1)), m.group(2), clean(m.group(3))
+            if mark == ".prof":
+                if not prev_prof:   # 언론사 표시가 나오면 새 이슈 묶음 시작
+                    rank += 1
+                    cluster = {"press": "", "start": m.end(), "arts": [], "rank": rank}
+                if text:
+                    cluster["press"] = text
+            elif mark == ".tit" and cluster and text:
+                first = not cluster["arts"]
+                # 묶인 기사(대표 기사 아래 작은 기사)는 시간이 안 보여서 대표 기사 시간을 씁니다.
+                date = (parse_when(page_html[cluster["start"]:m.start()], now).strftime("%Y-%m-%d %H:%M")
+                        if first else cluster["arts"][0]["date"])
+                art = {"title": text, "link": href,
+                       "source": cluster["press"] if first and cluster["press"] else press_from_url(href),
+                       "date": date, "origin": "naver",
+                       "rank": cluster["rank"], "related": 0}
+                cluster["arts"].append(art)
+                items.append(art)
+            elif mark == ".more" and cluster:
+                n = re.search(r"(\d+)\s*건", text)
+                if n:
+                    for a in cluster["arts"]:
+                        a["related"] = int(n.group(1))
+            prev_prof = mark == ".prof"
+        time.sleep(0.5)  # 네이버에 부담을 주지 않도록 잠깐 쉬기
+    return items
+
+
 def fetch_naver_search(query):
     if not (NAVER_ID and NAVER_SECRET):
-        return []
-    url = ("https://openapi.naver.com/v1/search/news.json?display=50&sort=sim&query="
+        return fetch_naver_web(query)
+    url =("https://openapi.naver.com/v1/search/news.json?display=50&sort=sim&query="
            + urllib.parse.quote(query))
     res = json.loads(get(url, {"X-Naver-Client-Id": NAVER_ID, "X-Naver-Client-Secret": NAVER_SECRET}))
     items = []
     for rank, it in enumerate(res.get("items", []), 1):
         title = html.unescape(re.sub(r"<[^>]+>", "", it["title"]))
-        origin_link = it.get("originallink") or it["link"]
-        host = urllib.parse.urlparse(origin_link).netloc.removeprefix("www.")
-        source = next((name for dom, name in PRESS.items() if host.endswith(dom)), host)
+        source = press_from_url(it.get("originallink") or it["link"])
         try:
             published = parsedate_to_datetime(it["pubDate"]).astimezone(KST)
         except (TypeError, ValueError):
@@ -236,7 +298,8 @@ def make_issues(articles):
         popular = any(m.get("popular") for m in ms)
         best_rank = min(m.get("rank", 99) for m in ms)
         rank_bonus = 3 if best_rank <= 3 else 2 if best_rank <= 10 else 1 if best_rank <= 20 else 0
-        hot = (2 * len(sources) + (2 if len(origins) > 1 else 0)
+        related = max(m.get("related", 0) for m in ms)   # 네이버 '관련뉴스 N건'
+        hot = (2 * len(sources) + 0.4 * min(related, 30) + (2 if len(origins) > 1 else 0)
                + (8 if popular else 0) + rank_bonus)
         cats = Counter(m["category"] for m in ms if m.get("category"))
         # 같은 언론사 기사는 하나만 남기기
@@ -247,7 +310,8 @@ def make_issues(articles):
                 others.append({k: m[k] for k in ("title", "link", "source")})
         result.append({
             "title": lead["title"], "link": lead["link"], "source": lead["source"],
-            "date": max(m["date"] for m in ms), "count": len(sources) or 1,
+            # 관련 보도 수 = 직접 확인한 언론사 수와 네이버 '관련뉴스 N건' 중 큰 값
+            "date": max(m["date"] for m in ms), "count": max(len(sources), related, 1), "related": related,
             "hot": round(hot, 1), "popular": popular,
             "origins": sorted(origins), "category": cats.most_common(1)[0][0] if cats else "",
             "keywords": sorted({k for m in ms for k in matched_keywords(m["title"])}),
@@ -408,6 +472,7 @@ def main():
             b = sample[key]
             b["rank"] = min(b["rank"], a["rank"])
             b["popular"] = b.get("popular") or a.get("popular")
+            b["related"] = max(b.get("related", 0), a.get("related", 0))
             if a["origin"] != b["origin"]:
                 b["origin_both"] = True
         else:
