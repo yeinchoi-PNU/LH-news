@@ -18,6 +18,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: python collect.py
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
       - name: 수집 결과 저장
         run: |
           git config user.name "news-bot"
