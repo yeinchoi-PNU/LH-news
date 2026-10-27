@@ -3,6 +3,7 @@ rem LH-news: collect news on this PC and upload the result to GitHub.
 rem Double-click to run now. To collect a past date: run_collect.bat 2026-10-20
 chcp 65001 > nul
 cd /d "%~dp0"
+set PATH=C:\Program Files\Git\cmd;%PATH%
 if not exist data\logs mkdir data\logs
 set LOG=data\logs\pc-run.log
 
