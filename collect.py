@@ -106,6 +106,10 @@ POLICY_TOPIC = ["대책", "부동산 정책", "부동산정책", "주택정책",
                 "규제지역", "조정대상", "공급계획", "공급 계획", "인허가", "기준금리", "법안", "개정안", "시행령",
                 "기재부", "금융위", "주택법", "임대차"]
 # 제목에 이런 말이 있으면 정책 이슈에서 뺍니다. (사건·업계 소식)
+# 대표 기사 제목에 이런 말이 있으면 입주자 모집·청약 안내 같은 '공지' 기사로 보고 LH 브리핑에서 뺍니다.
+# (전체 기사 탭에는 그대로 남음) — 브리핑에는 LH의 계획·문제를 다루는 기사만 남깁니다.
+LH_NOTICE = ["모집", "공고", "접수", "당첨", "추첨", "견본주택", "모델하우스", "분양 일정", "청약 일정", "선착순",
+             "신청 받", "신청받", "입주자 선정", "설명회 개최"]
 POLICY_EXCLUDE = ["징역", "검거", "구속", "가로챈", "우수사례", "수주", "연구회", "분양 일정", "견본주택"]
 N_POLICY_ISSUES = 12   # 부동산 정책 탭에 보여줄 이슈 수
 
@@ -410,6 +414,14 @@ def lh_level(a):
     return 1 if any(w in text for w in LH_PROJECTS) else 0
 
 
+def is_notice(title):
+    # 입주자 모집·청약 안내·분양 광고 같은 공지 기사인지
+    # 'N월 분양', '…임대주택 4663가구 공급'처럼 공급 물량만 알리는 제목도 공지로 봅니다.
+    return (any(w in title for w in LH_NOTICE) or bool(re.search(r"\d+월 (분양|공급|청약)", title))
+            or bool(re.search(r"(임대주택|행복주택|공공임대|매입임대|전세임대|국민임대|공공분양|든든전세)\s*"
+                              r"(\d[\d,]*\s*(호|가구|세대)\s*)?공급\s*$", title)))
+
+
 def make_issues(articles):
     for a in articles:
         a["_bg"] = bigrams(norm(a["title"]))
@@ -440,8 +452,10 @@ def make_issues(articles):
         best_rank = min(m.get("rank", 99) for m in ms)
         related = max(m.get("related", 0) for m in ms)                # 네이버 '관련뉴스 N건'
         google_related = max(m.get("google_related", 0) for m in ms)  # 구글 관련 기사 수
-        lh = max(lh_level(m) for m in ms)
-        policy = (any(w in m["title"] for m in ms for w in POLICY_TOPIC)
+        # 같은 묶음의 다른 기사 제목이 '모집'이라고 쓴 경우도 있어서, 묶음 전체 제목을 봅니다.
+        notice = sum(is_notice(m["title"]) for m in ms) * 3 >= len(ms) or is_notice(lead["title"])
+        lh = 0 if notice else max(lh_level(m) for m in ms)
+        policy = (not notice and any(w in m["title"] for m in ms for w in POLICY_TOPIC)
                   and not any(w in lead["title"] for w in POLICY_EXCLUDE))
         hot = (2 * len(sources) + 0.4 * min(related, 30) + 0.3 * min(google_related, 10)
                + (2 if len(origins) > 1 else 0) + (8 if popular else 0) + max(0, 3 - 0.15 * best_rank)
