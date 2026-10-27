@@ -102,6 +102,21 @@ POLICY_TOPIC = ["대책", "부동산 정책", "부동산정책", "주택정책",
 POLICY_EXCLUDE = ["징역", "검거", "구속", "가로챈", "우수사례", "수주", "연구회", "분양 일정", "견본주택"]
 N_POLICY_ISSUES = 12   # 부동산 정책 탭에 보여줄 이슈 수
 
+# 정책 이슈마다 '긍정 시각' 1개, '비판 시각' 1개를 고릅니다. 제목·요약에 나온 단어로 판단합니다.
+# (부정 표현을 먼저 지운 뒤 긍정 단어를 세므로 '효과 없어'는 긍정으로 세지 않습니다)
+TONE_NEG = ["효과 없", "실효성", "우려", "비판", "반발", "역효과", "부작용", "논란", "지적", "혼란", "졸속", "발목",
+            "역행", "반대", "불만", "한계", "엇박자", "땜질", "무리", "경고", "걱정", "쓴소리", "불안", "폭락", "역부족",
+            "허점", "미흡", "실패", "규탄", "재검토", "제동", "갈등", "후폭풍", "불똥", "패닉", "낙관", "안이",
+            "오판", "말뿐", "탁상", "자화자찬", "되레", "역주행", "외면", "의문", "물음표", "괴리", "딴소리",
+            "헛돌", "헛발질", "연속 상승", "급등", "무색", "풍선 효과", "풍선효과", "가파르게", "주거난", "비명",
+            "밀려나", "심각", "악화", "부담 가중", "사각지대"]
+TONE_POS = ["기대", "환영", "호평", "긍정", "효과", "안정", "숨통", "탄력", "청신호", "반겨", "도움", "성과", "해법",
+            "기회", "마중물", "개선", "활성화", "단비", "훈풍", "회복", "지원", "완화", "해소"]
+# 사설·칼럼도 함께 찾습니다. 제목이 이런 표시로 시작하면 '칼럼'으로 봅니다.
+OPINION_MARK = re.compile(r"^\s*[\[【<〈(]?\s*(사설|칼럼|시론|기고|오피니언|데스크|기자수첩|논단|포럼|시평|시각|사설·칼럼|"
+                          r"기자의 ?눈|취재수첩|목멱칼럼|경제칼럼|아침을 열며|아침햇발|만물상|횡설수설|분수대|여적|씨줄날줄)")
+OPINION_DAYS = 3       # 사설·칼럼은 최근 며칠 것까지 볼지
+
 # 제목에 이런 말이 있으면 관련 없는 기사로 보고 버립니다.
 EXCLUDE = ["축제", "플리마켓", "맛집", "공연", "콘서트", "운세", "날씨", "부고", "인사]", "[인사", "결혼", "야구", "축구"]
 
@@ -232,14 +247,18 @@ def fetch_google(query, day=None):
     return items
 
 
-def fetch_naver_web(query, day=None):
+def fetch_naver_web(query, day=None, pages=NAVER_PAGES, since=None):
     # 네이버 뉴스 검색 화면(최근 1일 또는 지정한 날짜, 관련도순)을 읽습니다.
     # 화면은 [언론사 → 대표 기사 → 묶인 기사들 → '관련뉴스 N건'] 순서로 되어 있습니다.
     # 네이버가 화면 구조를 바꾸면 여기서 기사가 0건이 될 수 있습니다.
+    # since 를 주면 그 날짜부터 day(또는 오늘)까지 검색합니다.
     now = datetime.now(KST)
-    period = f"&pd=3&ds={day:%Y.%m.%d}&de={day:%Y.%m.%d}" if day else "&pd=4"
+    if since:
+        period = f"&pd=3&ds={since:%Y.%m.%d}&de={(day or now.date()):%Y.%m.%d}"
+    else:
+        period = f"&pd=3&ds={day:%Y.%m.%d}&de={day:%Y.%m.%d}" if day else "&pd=4"
     items, rank = [], 0
-    for page in range(NAVER_PAGES):
+    for page in range(pages):
         url = ("https://search.naver.com/search.naver?where=news&sort=0" + period
                + "&start=" + str(1 + page * 10) + "&query=" + urllib.parse.quote(query))
         page_html = get(url)
@@ -428,9 +447,69 @@ def make_issues(articles):
             "origins": sorted(origins), "category": cats.most_common(1)[0][0] if cats else "",
             "keywords": sorted({k for m in ms for k in matched_keywords(m["title"])}),
             "others": others[:8],
+            "_ms": ms,   # 묶인 기사 전체 (정책 시각 고르기에 쓰고, 저장 전에 지웁니다)
         })
     result.sort(key=lambda i: -i["hot"])
     return result
+
+
+def tone(a):
+    # 긍정 단어 수 − 1.5 × 비판 단어 수 로 시각을 판단: 긍정(+1), 비판(-1), 판단 어려움(0)
+    # 비판 표현이 더 드물고 뜻이 분명해서 1.5배로 셉니다.
+    text = a["title"] + " " + a.get("desc", "")
+    if OPINION_MARK.search(a["title"]):
+        # 칼럼은 글쓴이의 생각이 중요하므로 따옴표 안(남의 말을 옮긴 부분)은 빼고 봅니다.
+        text = re.sub(r"\"[^\"]*(\"|$)|“[^”]*(”|$)", " ", text)   # 요약이 잘려 닫는 따옴표가 없어도 지움
+    neg = sum(text.count(w) for w in TONE_NEG)
+    for w in TONE_NEG:
+        text = text.replace(w, " ")
+    pos = sum(text.count(w) for w in TONE_POS)
+    s = pos - 1.5 * neg
+    return (s > 0) - (s < 0)
+
+
+def article_hot(a):
+    # 기사 하나의 화제도 (이슈 화제도에서 언론사 수를 뺀 나머지 항목)
+    return (0.4 * min(a.get("related", 0), 30) + 0.3 * min(a.get("google_related", 0), 10)
+            + (2 if a.get("origin_both") else 0) + (8 if a.get("popular") else 0)
+            + max(0, 3 - 0.15 * a.get("rank", 99)))
+
+
+def core_words(iss, n=2):
+    # 이슈에 묶인 기사 제목들에 가장 많이 함께 나온 단어 (사설·칼럼 검색어로 씀)
+    df = Counter(w for m in iss["_ms"] for w in words(m["title"]))
+    lead = words(iss["title"])
+    return [w for w, _ in sorted(df.items(), key=lambda x: (-(x[0] in lead), -x[1], -len(x[0])))][:n]
+
+
+def add_views(iss, day=None, used=None):
+    # 정책 이슈에 '긍정 시각'과 '비판 시각' 기사(또는 칼럼)를 하나씩 붙입니다.
+    # 대표 기사는 이미 위에 보이므로 빼고, 다른 이슈에 이미 붙인 기사(used)도 뺍니다.
+    used = used if used is not None else set()
+    cands = [m for m in iss["_ms"] if m["link"] != iss["link"]]
+    q = " ".join(core_words(iss))
+    since = (day or datetime.now(KST).date()) - timedelta(days=OPINION_DAYS - 1)
+    for kind in ("사설", "칼럼"):
+        try:
+            res = fetch_naver_web(f"{q} {kind}", day, pages=1, since=since)
+        except Exception as e:
+            log(f"  ! 칼럼 검색 '{q} {kind}' 실패: {e}")
+            continue
+        # 칼럼은 핵심 단어가 제목에 하나 이상, 제목+요약에 모두 들어 있어야 같은 이슈로 봅니다.
+        cands += [a for a in res if OPINION_MARK.search(a["title"])
+                  and any(w in a["title"] for w in q.split())
+                  and all(w in a["title"] + a.get("desc", "") for w in q.split())]
+    views = {}
+    for a in sorted(cands, key=lambda a: -article_hot(a)):
+        if a["link"] in used:
+            continue
+        t = tone(a)
+        key = "pos" if t > 0 else "neg" if t < 0 else None
+        if key and key not in views:
+            used.add(a["link"])
+            views[key] = {"title": a["title"], "link": a["link"], "source": a["source"],
+                          "opinion": bool(OPINION_MARK.search(a["title"]))}
+    iss["views"] = views
 
 
 def pagerank(nodes, edges, d=0.85, steps=50):
@@ -663,6 +742,13 @@ def main():
     keywords, rate = pick_keywords(lh_sample, past)
     for kw in keywords:
         kw["issues"] = [i for i in lh_issues if kw["name"] in i["keywords"]][:ISSUES_PER_KEYWORD]
+    used = set()
+    for iss in policy_issues:
+        add_views(iss, day, used)
+    log(f"정책 시각: 긍정 {sum('pos' in i['views'] for i in policy_issues)}개, "
+        f"비판 {sum('neg' in i['views'] for i in policy_issues)}개 이슈에 붙임")
+    for iss in issues:
+        iss.pop("_ms", None)
 
     articles = sorted(({k: a[k] for k in ("title", "link", "source", "date", "origin", "category")}
                        | ({"popular": True} if a.get("popular") else {}) for a in sample),

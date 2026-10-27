@@ -69,6 +69,12 @@
   .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; align-items: center; }
   .badge { font-size: 11px; border-radius: 999px; padding: 1px 8px; background: var(--accent-soft); color: var(--accent); }
   .badge.hot { background: var(--hot-soft); color: var(--hot); font-weight: 700; }
+  .views { margin-top: 8px; display: grid; gap: 4px; font-size: 13px; }
+  .view { display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 8px; background: var(--bg); }
+  .view .vlabel { flex: none; font-weight: 700; font-size: 12px; }
+  .view.pos .vlabel { color: var(--accent); }
+  .view.neg .vlabel { color: var(--hot); }
+  .view a { font-weight: 500 !important; }
   details.others { margin-top: 6px; font-size: 13px; }
   details.others summary { cursor: pointer; color: var(--sub); }
   details.others ul { margin: 6px 0 0; padding-left: 18px; }
@@ -195,7 +201,7 @@
   <div id="policyView" hidden>
     <section class="box">
       <h2>오늘의 부동산 정책 이슈</h2>
-      <p class="desc">대책·규제·대출·세제·국토부 발표 등 정책 방향을 다룬 기사를 묶어 화제도 순으로 정렬 (LH가 직접 나오는 기사는 브리핑에서 봅니다)</p>
+      <p class="desc">대책·규제·대출·세제·국토부 발표 등 정책 방향을 다룬 기사를 묶어 화제도 순으로 정렬 (LH가 직접 나오는 기사는 브리핑에서 봅니다) · 이슈마다 화제도가 가장 높은 긍정 시각·비판 시각 기사(최근 3일 사설·칼럼 포함)를 하나씩 보여줍니다</p>
       <div id="ptop"></div>
     </section>
     <section class="box">
@@ -291,7 +297,19 @@
       data-title="${esc(a.title)}" data-source="${esc(a.source)}" data-date="${esc(a.date || "")}" title="스크랩">★</button>`;
   }
 
-  function issueHTML(i, rank, compact) {
+  // 정책 이슈의 긍정 시각·비판 시각 기사(칼럼)
+  function viewsHTML(i) {
+    const v = i.views || {};
+    const row = (key, label) => {
+      const a = v[key];
+      return `<div class="view ${key}"><span class="vlabel">${label}</span>${a
+        ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a> <span class="meta">${esc(a.source)}${a.opinion ? " · 칼럼" : ""}</span>`
+        : `<span class="meta">뚜렷한 기사를 찾지 못했어요</span>`}</div>`;
+    };
+    return `<div class="views">${row("pos", "👍 긍정 시각")}${row("neg", "👎 비판 시각")}</div>`;
+  }
+
+  function issueHTML(i, rank, compact, extra = "") {
     const others = (i.others || []).length
       ? `<details class="others"><summary>같은 이슈 다른 보도 ${i.others.length}건</summary><ul>${
           i.others.map(o => `<li><a href="${esc(o.link)}" target="_blank" rel="noopener">${esc(o.title)}</a> <span class="meta">${esc(o.source)}</span></li>`).join("")
@@ -311,6 +329,7 @@
       <div class="body">
         <a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>
         ${badges}
+        ${extra}
         ${compact ? "" : others}
       </div>
     </div>`;
@@ -352,7 +371,7 @@
     const b = state.date ? await loadDay(state.date) : null;
     if (id !== drawId) return;
     $("ptop").innerHTML = b && b.policy
-      ? (b.policy.map((i, n) => issueHTML(i, n + 1)).join("") || `<div class="empty">이날은 정책 이슈가 없어요.</div>`)
+      ? (b.policy.map((i, n) => issueHTML(i, n + 1, false, i.views ? viewsHTML(i) : "")).join("") || `<div class="empty">이날은 정책 이슈가 없어요.</div>`)
       : `<div class="empty">이 날짜는 정책 이슈를 따로 모으기 전에 수집돼서 보여드릴 수 없어요.</div>`;
     $("pmolit").innerHTML = POLICIES.slice(0, 10).map(p =>
       itemHTML({ title: p.title, link: p.link, source: "국토교통부", date: p.date, category: p.field })).join("")
