@@ -32,7 +32,7 @@ CATEGORIES = {
     "LH 기관 소식": ["LH 한국토지주택공사", "LH 사장", "LH 공사 발표"],
     "공공주택·임대": ["공공임대주택", "공공분양", "신혼희망타운", "매입임대"],
     "신도시·택지": ["3기 신도시", "공공택지", "신도시 착공"],
-    "부동산 정책": ["국토교통부 부동산 대책", "주택공급 대책", "부동산 규제"],
+    "부동산 정책": ["국토교통부 부동산 대책", "주택공급 대책", "부동산 규제", "주택 대출 규제", "부동산 세제"],
     "주거복지": ["주거복지", "전세사기 피해", "청년 주거 지원"],
     "도시재생·정비": ["도시재생 뉴딜", "공공재개발", "노후계획도시 정비"],
     "사건·감사·안전": ["LH 감사", "LH 부실시공", "건설현장 사고 공공"],
@@ -80,6 +80,27 @@ FALLBACK_KEYWORDS = ["LH", "공공임대", "주택공급", "집값", "전월세"
 DOMAIN = ["LH", "토지주택", "주택", "아파트", "부동산", "임대", "분양", "청약", "집값", "전세", "월세", "신도시",
           "재건축", "재개발", "정비", "국토", "건설", "공공기관", "공기업", "택지", "주거", "도시", "토지", "보상",
           "입주", "착공", "미분양", "대출", "경영평가", "공사", "HUG", "SH", "GH"]
+
+# LH 관련도: 제목이나 네이버 요약문에
+#   LH_DIRECT 가 있으면 'LH 직접', LH_PROJECTS 가 있으면 'LH 사업' 기사로 봅니다.
+#   '오늘의 브리핑'에는 이 두 가지만 나옵니다. 사업지·사업 이름은 자유롭게 추가하세요.
+LH_DIRECT = ["LH", "토지주택공사", "토지주택연구원"]
+LH_PROJECTS = ["3기 신도시", "3기신도시", "왕숙", "교산", "창릉", "계양테크노", "부천대장", "과천과천", "광명시흥",
+               "의왕군포안산", "화성진안", "남양주진접", "구리토평", "오산세교", "용인이동", "고양대곡",
+               "행복주택", "국민임대", "영구임대", "매입임대", "전세임대", "통합공공임대", "든든전세", "공공임대",
+               "공공분양", "뉴홈", "뉴:홈", "신혼희망타운", "사전청약", "본청약", "공공택지", "공공주택지구",
+               "공공재개발", "공공재건축", "공공정비", "도심 공공주택", "도심공공주택", "노후계획도시", "선도지구",
+               "피해주택 매입", "공공지원민간임대", "건설형 임대", "혁신도시", "도시재생 뉴딜"]
+LH_BONUS = 5   # 'LH 직접' 이슈의 화제도 가점
+
+# 부동산 정책 탭: 제목에 이런 말이 있는 이슈를 모읍니다. (LH 직접 기사는 브리핑에서 봅니다)
+POLICY_TOPIC = ["대책", "부동산 정책", "부동산정책", "주택정책", "주택 정책", "규제", "국토교통부", "국토부", "장관",
+                "차관", "대통령", "DSR", "세제", "종부세", "양도세", "취득세", "보유세", "공시가격", "토지거래허가",
+                "규제지역", "조정대상", "공급계획", "공급 계획", "인허가", "기준금리", "법안", "개정안", "시행령",
+                "기재부", "금융위", "주택법", "임대차"]
+# 제목에 이런 말이 있으면 정책 이슈에서 뺍니다. (사건·업계 소식)
+POLICY_EXCLUDE = ["징역", "검거", "구속", "가로챈", "우수사례", "수주", "연구회", "분양 일정", "견본주택"]
+N_POLICY_ISSUES = 12   # 부동산 정책 탭에 보여줄 이슈 수
 
 # 제목에 이런 말이 있으면 관련 없는 기사로 보고 버립니다.
 EXCLUDE = ["축제", "플리마켓", "맛집", "공연", "콘서트", "운세", "날씨", "부고", "인사]", "[인사", "결혼", "야구", "축구"]
@@ -244,6 +265,8 @@ def fetch_naver_web(query, day=None):
                        "cluster": cluster["id"]}
                 cluster["arts"].append(art)
                 items.append(art)
+            elif mark == ".body" and cluster and cluster["arts"]:
+                cluster["arts"][-1]["desc"] = text   # 기사 요약문 (LH 관련도 판단에 씀)
             elif mark == ".more" and cluster:
                 n = re.search(r"(\d+)\s*건", text)
                 if n:
@@ -346,6 +369,14 @@ def matched_keywords(title):
     return [k for k, (_, syns) in KEYWORDS.items() if any(s in title for s in syns)]
 
 
+def lh_level(a):
+    # 2 = LH 직접, 1 = LH 사업, 0 = 일반
+    text = a["title"] + " " + a.get("desc", "")
+    if any(w in text for w in LH_DIRECT):
+        return 2
+    return 1 if any(w in text for w in LH_PROJECTS) else 0
+
+
 def make_issues(articles):
     for a in articles:
         a["_bg"] = bigrams(norm(a["title"]))
@@ -376,8 +407,12 @@ def make_issues(articles):
         best_rank = min(m.get("rank", 99) for m in ms)
         related = max(m.get("related", 0) for m in ms)                # 네이버 '관련뉴스 N건'
         google_related = max(m.get("google_related", 0) for m in ms)  # 구글 관련 기사 수
+        lh = max(lh_level(m) for m in ms)
+        policy = (any(w in m["title"] for m in ms for w in POLICY_TOPIC)
+                  and not any(w in lead["title"] for w in POLICY_EXCLUDE))
         hot = (2 * len(sources) + 0.4 * min(related, 30) + 0.3 * min(google_related, 10)
-               + (2 if len(origins) > 1 else 0) + (8 if popular else 0) + max(0, 3 - 0.15 * best_rank))
+               + (2 if len(origins) > 1 else 0) + (8 if popular else 0) + max(0, 3 - 0.15 * best_rank)
+               + (LH_BONUS if lh == 2 else 0))
         cats = Counter(m["category"] for m in ms if m.get("category"))
         # 같은 언론사 기사는 하나만 남기기
         seen, others = {lead["source"]}, []
@@ -389,7 +424,7 @@ def make_issues(articles):
             "title": lead["title"], "link": lead["link"], "source": lead["source"],
             # 관련 보도 수 = 직접 확인한 언론사 수와 네이버 '관련뉴스 N건' 중 큰 값
             "date": max(m["date"] for m in ms), "count": max(len(sources), related, 1), "related": related,
-            "hot": round(hot, 1), "popular": popular,
+            "hot": round(hot, 1), "popular": popular, "lh": lh, "policy": policy,
             "origins": sorted(origins), "category": cats.most_common(1)[0][0] if cats else "",
             "keywords": sorted({k for m in ms for k in matched_keywords(m["title"])}),
             "others": others[:8],
@@ -610,6 +645,7 @@ def main():
             b["popular"] = b.get("popular") or a.get("popular")
             b["related"] = max(b.get("related", 0), a.get("related", 0))
             b["google_related"] = max(b.get("google_related", 0), a.get("google_related", 0))
+            b["desc"] = b.get("desc") or a.get("desc", "")
             if a["origin"] != b["origin"]:
                 b["origin_both"] = True
         else:
@@ -617,12 +653,16 @@ def main():
     sample = list(sample.values())
 
     issues = make_issues(sample)
+    # 브리핑은 LH 직접·LH 사업 기사만, 부동산 정책 탭은 정책 이슈만 따로 봅니다.
+    lh_sample = [a for a in sample if lh_level(a)]
+    lh_issues = [i for i in issues if i["lh"]]
+    policy_issues = [i for i in issues if i["policy"] and i["lh"] < 2][:N_POLICY_ISSUES]
     hist_path = DATA / "keyword_history.json"
     history = json.loads(hist_path.read_text(encoding="utf-8")) if hist_path.exists() else {}
     past = {d: h for d, h in sorted(history.items()) if d < today}
-    keywords, rate = pick_keywords(sample, past)
+    keywords, rate = pick_keywords(lh_sample, past)
     for kw in keywords:
-        kw["issues"] = [i for i in issues if kw["name"] in i["keywords"]][:ISSUES_PER_KEYWORD]
+        kw["issues"] = [i for i in lh_issues if kw["name"] in i["keywords"]][:ISSUES_PER_KEYWORD]
 
     articles = sorted(({k: a[k] for k in ("title", "link", "source", "date", "origin", "category")}
                        | ({"popular": True} if a.get("popular") else {}) for a in sample),
@@ -633,15 +673,17 @@ def main():
         "runner": runner,
         "sample": len(sample),
         "issue_count": len(issues),
-        "top": issues[:5],
+        "lh_count": len(lh_issues),
+        "top": lh_issues[:5],
         "keywords": keywords,
-        "by_category": {c: [i for i in issues if i["category"] == c][:3] for c in CATEGORIES},
-        "issue_terms": find_issue_terms(sample),
+        "by_category": {c: [i for i in lh_issues if i["category"] == c][:3] for c in CATEGORIES},
+        "issue_terms": find_issue_terms(lh_sample),
+        "policy": policy_issues,
         "articles": articles,
     }, ");")
     history[today] = {k: round(v, 4) for k, v in rate.items()}
     hist_path.write_text(json.dumps(dict(sorted(history.items())), ensure_ascii=False, indent=1), encoding="utf-8")
-    log(f"표본 {len(sample)}건 → 이슈 {len(issues)}개, 키워드 {[k['name'] for k in keywords]}")
+    log(f"표본 {len(sample)}건 → 이슈 {len(issues)}개 (LH 관련 {len(lh_issues)}개, 정책 {len(policy_issues)}개), 키워드 {[k['name'] for k in keywords]}")
 
     if not day:
         try:

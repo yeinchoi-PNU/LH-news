@@ -8,13 +8,13 @@
   :root {
     --bg: #f6f7f9; --card: #ffffff; --text: #1d2228; --sub: #67707a;
     --line: #e3e6ea; --accent: #0b6e4f; --accent-soft: #e3f2ec; --star: #e0a100;
-    --hot: #c2410c; --hot-soft: #fdeee4;
+    --hot: #c2410c; --hot-soft: #fdeee4; --read: #a3a9b0;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       --bg: #15181c; --card: #1e2227; --text: #e8eaed; --sub: #9aa3ad;
       --line: #30353c; --accent: #4cc39a; --accent-soft: #1d3a30; --star: #f2c94c;
-      --hot: #fb923c; --hot-soft: #3a2518;
+      --hot: #fb923c; --hot-soft: #3a2518; --read: #6b7279;
     }
   }
   * { box-sizing: border-box; }
@@ -65,6 +65,7 @@
   .body { flex: 1; min-width: 0; }
   .body a { color: var(--text); text-decoration: none; font-weight: 600; }
   .body a:hover { text-decoration: underline; }
+  .body a.read { color: var(--read); }   /* 이미 눌러서 읽은 기사 */
   .badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; align-items: center; }
   .badge { font-size: 11px; border-radius: 999px; padding: 1px 8px; background: var(--accent-soft); color: var(--accent); }
   .badge.hot { background: var(--hot-soft); color: var(--hot); font-weight: 700; }
@@ -133,8 +134,9 @@
     </div>
     <nav class="tabs">
       <button class="tab on" data-view="brief">오늘의 브리핑</button>
+      <button class="tab" data-view="policy">부동산 정책</button>
       <button class="tab" data-view="list">전체 기사</button>
-      <button class="tab" data-view="policy">국토부 보도자료</button>
+      <button class="tab" data-view="molit">국토부 보도자료</button>
       <button class="tab" data-view="scrap">★ 스크랩·메모</button>
     </nav>
   </div>
@@ -145,13 +147,13 @@
   <div id="brief">
     <section class="box">
       <h2>주요 키워드</h2>
-      <p class="desc">최근 24시간 기사에서 많이 나오고, 다른 이슈와 많이 엮이고, 평소보다 늘어난 키워드 · 누르면 아래 이슈로 이동</p>
+      <p class="desc">최근 24시간 LH 관련 기사에서 많이 나오고, 다른 이슈와 많이 엮이고, 평소보다 늘어난 키워드 · 누르면 아래 이슈로 이동</p>
       <div class="kwgrid" id="kwgrid"></div>
     </section>
 
     <section class="box">
-      <h2>가장 많이 보도된 이슈 TOP 5</h2>
-      <p class="desc">같은 내용의 기사를 하나로 묶고 화제도 순으로 정렬</p>
+      <h2>가장 많이 보도된 LH 이슈 TOP 5</h2>
+      <p class="desc">LH가 직접 나오거나 LH 사업(3기 신도시·공공임대 등)을 다룬 기사를 묶어 화제도 순으로 정렬</p>
       <div id="top"></div>
     </section>
 
@@ -178,13 +180,28 @@
         <summary>선정 기준 보기</summary>
         <ol>
           <li><b>기사 모으기</b> · 분야별 검색어로 구글 뉴스(최근 1일)와 네이버 뉴스 검색(최근 1일, 관련도순 2쪽)을 하고, 네이버 ‘언론사별 많이 본 뉴스’에서 부동산·공공 관련 기사를 더합니다. 그중 최근 24시간 기사가 분석 표본입니다(지난 날짜를 나중에 수집한 경우 그날 하루, 많이 본 뉴스 제외). 관련 단어(주택·LH·부동산·건설 등)가 없는 기사, 축제·연예 기사, 도박 광고 같은 스팸은 뺍니다.</li>
+          <li><b>LH 관련 기사만 남기기</b> · 제목이나 네이버 요약문에 LH·토지주택공사가 있거나, LH 사업(3기 신도시 지구 이름, 행복주택·매입임대·든든전세·뉴홈·신혼희망타운, 공공재개발, 노후계획도시 등)이 있는 기사만 브리핑에 씁니다. 나머지 부동산 정책 기사는 ‘부동산 정책’ 탭에, 그 밖의 기사는 ‘전체 기사’ 탭에서 볼 수 있습니다.</li>
           <li><b>이슈 묶기</b> · 네이버가 이미 묶어 둔 기사는 한 이슈로 시작하고, 제목의 글자 짝이 절반 넘게 겹치거나 핵심 단어가 3개 이상 겹치면 같은 이슈로 묶습니다. ‘관련 보도 N건’은 직접 확인한 언론사 수와 네이버 검색의 ‘관련뉴스 N건’ 중 큰 값입니다.</li>
-          <li><b>화제도</b> = 2 × 보도 언론사 수 + 0.4 × 네이버 관련뉴스 수(최대 30) + 0.3 × 구글 관련기사 수(최대 10) + 2(구글·네이버 양쪽에 노출) + 8(네이버 많이 본 뉴스에 포함) + 검색 순위 가점(3 − 0.15 × 순위, 최소 0)</li>
+          <li><b>화제도</b> = 2 × 보도 언론사 수 + 0.4 × 네이버 관련뉴스 수(최대 30) + 0.3 × 구글 관련기사 수(최대 10) + 2(구글·네이버 양쪽에 노출) + 8(네이버 많이 본 뉴스에 포함) + 검색 순위 가점(3 − 0.15 × 순위, 최소 0) + 5(LH가 직접 나오는 이슈)</li>
           <li><b>주요 키워드</b> · 후보 키워드(동의어 포함)마다 점수 = 0.45 × 출현 기사 수 + 0.35 × 연관 중심성(함께 나온 키워드 연결망의 PageRank) + 0.20 × 모멘텀 ÷ 3. 출현과 중심성은 최댓값 기준 0~1로 환산합니다. 모멘텀 = (오늘 출현율 + 0.01) ÷ (최근 7일 평균 출현율 + 0.01), 최대 3배, 기록이 없으면 1배입니다. 3건 미만으로 나온 키워드는 점수를 0.3배로 낮춥니다. 이미 고른 키워드와 기사가 50% 넘게 겹치면 건너뛰어 서로 다른 주제를 고르고, 모자라면 기본 키워드로 채웁니다.</li>
           <li><b>함께 많이 쓰인 표현</b> · 그 키워드가 나온 기사 제목에 함께 자주 나온 단어(괄호 안은 기사 수)</li>
           <li><b>새로 떠오른 단어</b> · 후보 키워드와 동의어에 없는 단어 중 3건 이상의 기사에 나온 단어를 많은 순으로 최대 30개</li>
         </ol>
       </details>
+    </section>
+  </div>
+
+  <!-- 부동산 정책 -->
+  <div id="policyView" hidden>
+    <section class="box">
+      <h2>오늘의 부동산 정책 이슈</h2>
+      <p class="desc">대책·규제·대출·세제·국토부 발표 등 정책 방향을 다룬 기사를 묶어 화제도 순으로 정렬 (LH가 직접 나오는 기사는 브리핑에서 봅니다)</p>
+      <div id="ptop"></div>
+    </section>
+    <section class="box">
+      <h2>최근 국토부 보도자료</h2>
+      <p class="desc">주택·토지·건설·도시 관련 최신 10건 · 전체는 ‘국토부 보도자료’ 탭에서</p>
+      <div id="pmolit"></div>
     </section>
   </div>
 
@@ -207,7 +224,7 @@
   </div>
 
   <!-- 국토부 보도자료 -->
-  <div id="policyView" hidden>
+  <div id="molitView" hidden>
     <div class="tools">
       <input id="psearch" type="search" placeholder="보도자료 제목 검색">
     </div>
@@ -251,6 +268,11 @@
   function save(key, v) { try { localStorage.setItem(key, JSON.stringify(v)); } catch {} }
   const stars = load("lh-stars");   // { 링크: {title, source, date} }
   const memos = load("lh-memos");
+  const reads = load("lh-read");    // { 링크: 1 } 눌러서 읽은 기사 → 연한 회색
+  function markRead() {
+    document.querySelectorAll("main .body a[href]").forEach(a =>
+      a.classList.toggle("read", !!reads[a.getAttribute("href")]));
+  }
   for (const k in stars) if (stars[k] === true) stars[k] = { title: k, source: "", date: "" };
 
   const STOP = new Set(["위해","대한","관련","통해","추진","개최","실시","진행","지역","올해","내년","기자","오늘",
@@ -320,7 +342,22 @@
     $("terms").innerHTML = (b.issue_terms || []).length
       ? b.issue_terms.map(([w, n]) => `<button class="word" data-term="${esc(w)}">${esc(w)} ${n}</button>`).join("")
       : `<span class="meta">없음</span>`;
-    $("updated").textContent = `${fmtDay(state.date)} 브리핑 · 분석 기사 ${b.sample}건 → 이슈 ${b.issue_count}개 · 수집 ${b.updated}`;
+    $("updated").textContent = `${fmtDay(state.date)} 브리핑 · 분석 기사 ${b.sample}건 → 이슈 ${b.issue_count}개`
+      + (b.lh_count != null ? ` 중 LH 관련 ${b.lh_count}개` : "") + ` · 수집 ${b.updated}`;
+  }
+
+  // ── 부동산 정책 ──
+  async function renderPolicyNews() {
+    const id = ++drawId;
+    const b = state.date ? await loadDay(state.date) : null;
+    if (id !== drawId) return;
+    $("ptop").innerHTML = b && b.policy
+      ? (b.policy.map((i, n) => issueHTML(i, n + 1)).join("") || `<div class="empty">이날은 정책 이슈가 없어요.</div>`)
+      : `<div class="empty">이 날짜는 정책 이슈를 따로 모으기 전에 수집돼서 보여드릴 수 없어요.</div>`;
+    $("pmolit").innerHTML = POLICIES.slice(0, 10).map(p =>
+      itemHTML({ title: p.title, link: p.link, source: "국토교통부", date: p.date, category: p.field })).join("")
+      || `<div class="empty">보도자료가 없습니다.</div>`;
+    $("updated").textContent = `${fmtDay(state.date)} 부동산 정책 · 정책 이슈 ${b && b.policy ? b.policy.length : 0}개`;
   }
 
   // ── 전체 기사 / 스크랩 ──
@@ -420,16 +457,23 @@
   }
 
   async function render(reload) {
+    await draw(reload);
+    markRead();
+  }
+
+  async function draw(reload) {
     document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.view === state.view));
     $("brief").hidden = state.view !== "brief";
     $("listView").hidden = !["list", "scrap"].includes(state.view);
     $("policyView").hidden = state.view !== "policy";
-    $("datenav").hidden = state.view !== "brief";
+    $("molitView").hidden = state.view !== "molit";
+    $("datenav").hidden = !["brief", "policy"].includes(state.view);
     const i = dates.indexOf(state.date);
     $("prev").disabled = i <= 0;
     $("next").disabled = i >= dates.length - 1;
     if (state.view === "brief") return renderBrief();
-    if (state.view === "policy") return renderPolicy();
+    if (state.view === "policy") return renderPolicyNews();
+    if (state.view === "molit") return renderPolicy();
     if (state.view === "list" && (reload || !listArticles.length)) {
       $("list").innerHTML = `<div class="empty">기사를 불러오는 중…</div>`;
       await loadPeriod();
@@ -472,6 +516,11 @@
     else stars[k] = { title: b.dataset.title, source: b.dataset.source, date: b.dataset.date };
     save("lh-stars", stars); render();
   });
+  // 기사 링크를 누르면(가운데 버튼 포함) 읽은 기사로 기록하고 회색으로 바꿉니다.
+  ["click", "auxclick"].forEach(type => document.querySelector("main").addEventListener(type, e => {
+    const a = e.target.closest(".body a[href]"); if (!a) return;
+    reads[a.getAttribute("href")] = 1; save("lh-read", reads); markRead();
+  }));
   document.querySelector("main").addEventListener("input", e => {
     const t = e.target.closest("[data-memo]"); if (!t) return;
     memos[t.dataset.memo] = t.value; save("lh-memos", memos);

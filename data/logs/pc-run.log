@@ -56,3 +56,12 @@ Already up to date.
 수집 1744건 → 스팸·무관 기사 제외 후 1373건
 표본 693건 → 이슈 298개, 키워드 ['LH', '신도시·택지', '주택공급', '재건축·재개발', '국토부', '주거복지', '집값', '감사·수사']
 국토부 보도자료: 새로 3건, 총 15건
+warning: in the working copy of 'data/logs/pc-run.log', LF will be replaced by CRLF the next time Git touches it
+[main 91338c9] news collect (PC) 2026-10-27
+ 6 files changed, 144 insertions(+), 2 deletions(-)
+ create mode 100644 data/days/2026-10-27.js
+ create mode 100644 data/logs/2026-10-27.log
+ create mode 100644 data/logs/pc-run.log
+To https://github.com/yeinchoi-PNU/LH-news.git
+   31b8ff9..91338c9  main -> main
+===== 2026-10-27 14:50:19.23 end ===== 
