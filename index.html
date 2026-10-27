@@ -534,7 +534,7 @@
     if (state.view === "brief") return renderBrief();
     if (state.view === "policy") return renderPolicyNews();
     if (state.view === "molit") return renderPolicy();
-    if (state.view === "tip") { $("updated").textContent = "면접관에게 어필할 이 사이트의 장점"; return; }
+    if (state.view === "tip") { $("updated").textContent = ""; return; }
     if (state.view === "list" && (reload || !listArticles.length)) {
       $("list").innerHTML = `<div class="empty">기사를 불러오는 중…</div>`;
       await loadPeriod();
