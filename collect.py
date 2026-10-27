@@ -9,6 +9,7 @@
 # 실행 방법
 #   python collect.py              → 오늘(최근 24시간) 수집
 #   python collect.py 2026-10-20   → 지난 날짜 하루치를 나중에 수집
+#   python collect.py last7        → 어제부터 7일 전까지 한꺼번에 다시 수집
 
 import html
 import http.cookiejar
@@ -693,9 +694,10 @@ def collect(day=None):
     return kept
 
 
-def main():
+def main(arg=""):
+    LOG.clear()
     now = datetime.now(KST)
-    day = Date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].strip() else None
+    day = Date.fromisoformat(arg) if arg.strip() else None
     today = str(day) if day else now.strftime("%Y-%m-%d")
     runner = "github" if os.environ.get("GITHUB_ACTIONS") else "pc"
     log(f"=== {today} 수집 시작 ({'지난 날짜' if day else '오늘'}, {runner}) ===")
@@ -785,4 +787,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    arg = sys.argv[1].strip() if len(sys.argv) > 1 else ""
+    if arg.startswith("last"):   # 예: last7 → 어제부터 7일 전까지 차례로 다시 수집
+        today = datetime.now(KST).date()
+        for n in range(int(arg[4:] or 7), 0, -1):
+            main(str(today - timedelta(days=n)))
+    else:
+        main(arg)
