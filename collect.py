@@ -81,6 +81,12 @@ FALLBACK_KEYWORDS = ["LH", "공공임대", "주택공급", "집값", "전월세"
 DOMAIN = ["LH", "토지주택", "주택", "아파트", "부동산", "임대", "분양", "청약", "집값", "전세", "월세", "신도시",
           "재건축", "재개발", "정비", "국토", "건설", "공공기관", "공기업", "택지", "주거", "도시", "토지", "보상",
           "입주", "착공", "미분양", "대출", "경영평가", "공사", "HUG", "SH", "GH"]
+# 정책 시각에서: 이런 넓은 단어만으로 이슈와 겹치는 기사는 제목에 HOUSING 단어도 있어야 같은 이야기로 봅니다.
+# (예: '국토부'만 겹치는 항공 기사, '대출'만 겹치는 은행 기사)
+GENERIC = ["국토부", "국토교통부", "정부", "대통령", "서울시", "규제", "대출", "정책", "대책", "장관", "차관",
+           "금융위", "기재부", "지원", "추진", "확대", "속도", "발표", "국감"]
+HOUSING = ["LH", "토지주택", "주택", "아파트", "부동산", "임대", "분양", "청약", "집값", "전세", "월세", "신도시",
+           "재건축", "재개발", "정비", "택지", "주거", "토지", "입주", "착공", "미분양", "주담대", "HUG", "SH", "GH"]
 
 # LH 관련도: 제목이나 네이버 요약문에
 #   LH_DIRECT 가 있으면 'LH 직접', LH_PROJECTS 가 있으면 'LH 사업' 기사로 봅니다.
@@ -526,7 +532,13 @@ def add_views(iss, day=None, used=None):
 
     def relevant(a):
         # 핵심 단어가 제목에 하나 이상 있고, 제목이 부동산·주택 이야기여야 합니다.
-        return any(w in a["title"] for w in q.split()) and any(x in a["title"] for x in DOMAIN)
+        # 제목에 겹치는 핵심 단어가 넓은 단어(GENERIC)뿐이면 주택 단어(HOUSING)도 있어야 합니다.
+        # 핵심 단어는 낱말의 앞부분이어야 셉니다. ('공모'는 '공모에'는 되지만 '설계공모안'은 안 됨)
+        toks = re.findall(r"[가-힣A-Za-z0-9]+", a["title"])
+        hit = [w for w in q.split() if any(t.startswith(w) for t in toks)]
+        if not hit or not any(x in a["title"] for x in DOMAIN):
+            return False
+        return any(w not in GENERIC for w in hit) or any(x in a["title"] for x in HOUSING)
 
     views = {}
 
