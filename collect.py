@@ -110,13 +110,16 @@ TONE_NEG = ["효과 없", "실효성", "우려", "비판", "반발", "역효과"
             "허점", "미흡", "실패", "규탄", "재검토", "제동", "갈등", "후폭풍", "불똥", "패닉", "낙관", "안이",
             "오판", "말뿐", "탁상", "자화자찬", "되레", "역주행", "외면", "의문", "물음표", "괴리", "딴소리",
             "헛돌", "헛발질", "연속 상승", "급등", "무색", "풍선 효과", "풍선효과", "가파르게", "주거난", "비명",
-            "밀려나", "심각", "악화", "부담 가중", "사각지대"]
+            "밀려나", "심각", "악화", "부담 가중", "사각지대", "갇힌", "갇혀", "팔 수가 없", "어떡하나", "막막",
+            "발 묶", "빨간불", "차질", "시급"]
 TONE_POS = ["기대", "환영", "호평", "긍정", "효과", "안정", "숨통", "탄력", "청신호", "반겨", "도움", "성과", "해법",
             "기회", "마중물", "개선", "활성화", "단비", "훈풍", "회복", "지원", "완화", "해소"]
 # 사설·칼럼도 함께 찾습니다. 제목이 이런 표시로 시작하면 '칼럼'으로 봅니다.
 OPINION_MARK = re.compile(r"^\s*[\[【<〈(]?\s*(사설|칼럼|시론|기고|오피니언|데스크|기자수첩|논단|포럼|시평|시각|사설·칼럼|"
                           r"기자의 ?눈|취재수첩|목멱칼럼|경제칼럼|아침을 열며|아침햇발|만물상|횡설수설|분수대|여적|씨줄날줄)")
-OPINION_DAYS = 3       # 사설·칼럼은 최근 며칠 것까지 볼지
+OPINION_DAYS = 3       # 사설·칼럼과 반응 기사는 최근 며칠 것까지 볼지
+# 한쪽 시각이 비면 정책 핵심 단어에 이 말을 붙여 반응 기사를 더 찾습니다.
+VIEW_QUERIES = {"pos": ["기대", "환영"], "neg": ["우려", "비판"]}
 
 # 제목에 이런 말이 있으면 관련 없는 기사로 보고 버립니다.
 EXCLUDE = ["축제", "플리마켓", "맛집", "공연", "콘서트", "운세", "날씨", "부고", "인사]", "[인사", "결혼", "야구", "축구"]
@@ -487,29 +490,42 @@ def add_views(iss, day=None, used=None):
     # 정책 이슈에 '긍정 시각'과 '비판 시각' 기사(또는 칼럼)를 하나씩 붙입니다.
     # 대표 기사는 이미 위에 보이므로 빼고, 다른 이슈에 이미 붙인 기사(used)도 뺍니다.
     used = used if used is not None else set()
-    cands = [m for m in iss["_ms"] if m["link"] != iss["link"]]
     q = " ".join(core_words(iss))
     since = (day or datetime.now(KST).date()) - timedelta(days=OPINION_DAYS - 1)
-    for kind in ("사설", "칼럼"):
+
+    def search(word, opinion_only):
+        # 핵심 단어가 제목에 하나 이상, 제목+요약에 모두 들어 있어야 같은 정책 이야기로 봅니다.
         try:
-            res = fetch_naver_web(f"{q} {kind}", day, pages=1, since=since)
+            res = fetch_naver_web(f"{q} {word}", day, pages=1, since=since)
         except Exception as e:
-            log(f"  ! 칼럼 검색 '{q} {kind}' 실패: {e}")
-            continue
-        # 칼럼은 핵심 단어가 제목에 하나 이상, 제목+요약에 모두 들어 있어야 같은 이슈로 봅니다.
-        cands += [a for a in res if OPINION_MARK.search(a["title"])
-                  and any(w in a["title"] for w in q.split())
-                  and all(w in a["title"] + a.get("desc", "") for w in q.split())]
+            log(f"  ! 시각 검색 '{q} {word}' 실패: {e}")
+            return []
+        return [a for a in res if (not opinion_only or OPINION_MARK.search(a["title"]))
+                and all(w in a["title"] + a.get("desc", "") for w in q.split())]
+
+    def relevant(a):
+        # 핵심 단어가 제목에 하나 이상 있고, 제목이 부동산·주택 이야기여야 합니다.
+        return any(w in a["title"] for w in q.split()) and any(x in a["title"] for x in DOMAIN)
+
     views = {}
-    for a in sorted(cands, key=lambda a: -article_hot(a)):
-        if a["link"] in used:
-            continue
-        t = tone(a)
-        key = "pos" if t > 0 else "neg" if t < 0 else None
-        if key and key not in views:
-            used.add(a["link"])
-            views[key] = {"title": a["title"], "link": a["link"], "source": a["source"],
-                          "opinion": bool(OPINION_MARK.search(a["title"]))}
+
+    def pick(cands):
+        for a in sorted(cands, key=lambda a: -article_hot(a)):
+            if a["link"] in used or a["link"] == iss["link"] or not relevant(a):
+                continue
+            t = tone(a)
+            key = "pos" if t > 0 else "neg" if t < 0 else None
+            if key and key not in views:
+                used.add(a["link"])
+                views[key] = {"title": a["title"], "link": a["link"], "source": a["source"],
+                              "opinion": bool(OPINION_MARK.search(a["title"]))}
+
+    # 1차: 같은 이슈로 묶인 기사 + 최근 사설·칼럼
+    pick(list(iss["_ms"]) + search("사설", True) + search("칼럼", True))
+    # 2차: 한쪽 시각이 없으면 그 정책에 대한 반응 기사를 따로 찾습니다. (예: "분당 재건축 우려")
+    for key, ws in VIEW_QUERIES.items():
+        if key not in views:
+            pick([a for w in ws for a in search(w, False)])
     iss["views"] = views
 
 
