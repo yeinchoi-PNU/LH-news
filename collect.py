@@ -114,6 +114,9 @@ TONE_NEG = ["효과 없", "실효성", "우려", "비판", "반발", "역효과"
             "발 묶", "빨간불", "차질", "시급"]
 TONE_POS = ["기대", "환영", "호평", "긍정", "효과", "안정", "숨통", "탄력", "청신호", "반겨", "도움", "성과", "해법",
             "기회", "마중물", "개선", "활성화", "단비", "훈풍", "회복", "지원", "완화", "해소"]
+# 비판 단어 바로 뒤(6글자 안)에 이런 말이 붙으면 '해결'을 말하는 것이라 비판으로 세지 않습니다.
+TONE_SOLVE = ["방지", "해소", "최소화", "막아", "막을", "막기", "막는", "없도록", "줄이", "줄여", "예방", "해결",
+              "대비", "차단"]
 # 사설·칼럼도 함께 찾습니다. 제목이 이런 표시로 시작하면 '칼럼'으로 봅니다.
 OPINION_MARK = re.compile(r"^\s*[\[【<〈(]?\s*(사설|칼럼|시론|기고|오피니언|데스크|기자수첩|논단|포럼|시평|시각|사설·칼럼|"
                           r"기자의 ?눈|취재수첩|목멱칼럼|경제칼럼|아침을 열며|아침햇발|만물상|횡설수설|분수대|여적|씨줄날줄)")
@@ -457,20 +460,33 @@ def make_issues(articles):
     return result
 
 
-def tone(a, core=()):
-    # 긍정 단어 수 − 1.5 × 비판 단어 수 로 시각을 판단: 긍정(+1), 비판(-1), 판단 어려움(0)
-    # 비판 표현이 더 드물고 뜻이 분명해서 1.5배로 셉니다.
+def tone_words(a, core=()):
+    # 시각 판단에 쓴 비판 단어와 긍정 단어 목록
     # 다른 주제에 대한 찬반이 섞이지 않도록 제목과, 요약문 중 정책 핵심 단어(core)가 있는 문장만 봅니다.
-    sentences = re.split(r"(?<=[.?!…])\s+|\.\.\.", a.get("desc", ""))
+    desc = a.get("desc", "")
+    if a.get("_qw"):
+        # 네이버 요약문은 검색어가 들어간 부분을 보여 주므로, 검색에 쓴 단어('비판' 등)는 요약문에서 셈하지 않습니다.
+        desc = desc.replace(a["_qw"], " ")
+    sentences = re.split(r"(?<=[.?!…])\s+|\.\.\.", desc)
     text = a["title"] + " " + " ".join(s for s in sentences if any(w in s for w in core))
     if OPINION_MARK.search(a["title"]):
         # 칼럼은 글쓴이의 생각이 중요하므로 따옴표 안(남의 말을 옮긴 부분)은 빼고 봅니다.
         text = re.sub(r"\"[^\"]*(\"|$)|“[^”]*(”|$)", " ", text)   # 요약이 잘려 닫는 따옴표가 없어도 지움
-    neg = sum(text.count(w) for w in TONE_NEG)
+    # '차질 방지', '불안 해소'처럼 바로 뒤에 해결을 말하는 표현이 붙은 비판 단어는 비판으로 세지 않습니다.
+    for w in TONE_NEG:
+        text = re.sub(re.escape(w) + r"[^.,…]{0,6}?(" + "|".join(TONE_SOLVE) + ")", " ", text)
+    neg = [w for w in TONE_NEG for _ in range(text.count(w))]
     for w in TONE_NEG:
         text = text.replace(w, " ")
-    pos = sum(text.count(w) for w in TONE_POS)
-    s = pos - 1.5 * neg
+    pos = [w for w in TONE_POS for _ in range(text.count(w))]
+    return neg, pos
+
+
+def tone(a, core=()):
+    # 긍정 단어 수 − 1.5 × 비판 단어 수 로 시각을 판단: 긍정(+1), 비판(-1), 판단 어려움(0)
+    # 비판 표현이 더 드물고 뜻이 분명해서 1.5배로 셉니다.
+    neg, pos = tone_words(a, core)
+    s = len(pos) - 1.5 * len(neg)
     return (s > 0) - (s < 0)
 
 
@@ -502,6 +518,8 @@ def add_views(iss, day=None, used=None):
         except Exception as e:
             log(f"  ! 시각 검색 '{q} {word}' 실패: {e}")
             return []
+        for a in res:
+            a["_qw"] = word   # 검색에 쓴 단어 (시각 판단에서 뺍니다)
         return [a for a in res if (not opinion_only or OPINION_MARK.search(a["title"]))
                 and all(w in a["title"] + a.get("desc", "") for w in q.split())]
 
@@ -518,6 +536,8 @@ def add_views(iss, day=None, used=None):
             t = tone(a, q.split())
             key = "pos" if t > 0 else "neg" if t < 0 else None
             if key and key not in views:
+                neg, pos = tone_words(a, q.split())
+                log(f"  시각 {key}: {a['title'][:40]} ← 핵심어 [{q}] 비판 {neg} 긍정 {pos}")
                 used.add(a["link"])
                 views[key] = {"title": a["title"], "link": a["link"], "source": a["source"],
                               "date": a["date"][:10], "opinion": bool(OPINION_MARK.search(a["title"]))}
