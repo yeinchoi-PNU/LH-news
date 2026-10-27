@@ -2,19 +2,26 @@
 # 1) 구글 뉴스 + 네이버(뉴스 검색 화면, 많이 본 뉴스)에서 기사를 모으고
 # 2) 제목이 비슷한 기사를 하나의 '이슈'로 묶은 뒤
 # 3) '화제도' 점수로 중요한 이슈를 고르고
-# 4) 주요 키워드를 골라 news-data.js 파일로 저장합니다.
+# 4) 주요 키워드와 새로 떠오른 단어를 골라 data/days/날짜.js 파일로 저장합니다.
+# 5) 국토교통부 보도자료도 함께 모아 data/policies.js 에 쌓습니다.
 # 파이썬 기본 기능만 사용하므로 따로 설치할 것이 없습니다.
+#
+# 실행 방법
+#   python collect.py              → 오늘(최근 24시간) 수집
+#   python collect.py 2026-10-20   → 지난 날짜 하루치를 나중에 수집
 
 import html
+import http.cookiejar
 import json
 import os
 import re
+import sys
 import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
-from datetime import datetime, timedelta, timezone
+from datetime import date as Date, datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
@@ -66,6 +73,8 @@ KEYWORDS = {
     "지역균형": ("신도시·택지", ["지방소멸", "지역균형", "혁신도시"]),
     "유관기관": ("공공기관 경영", ["주택도시보증공사", "HUG", "서울주택도시공사", "SH공사", "GH"]),
 }
+# 기사가 적은 날, 주요 키워드가 모자라면 이 순서로 채웁니다.
+FALLBACK_KEYWORDS = ["LH", "공공임대", "주택공급", "집값", "전월세", "3기 신도시", "주거복지", "재건축·재개발"]
 
 # 제목에 이 중 하나라도 있어야 관련 기사로 봅니다. (정치·연예 기사가 섞이는 것을 막음)
 DOMAIN = ["LH", "토지주택", "주택", "아파트", "부동산", "임대", "분양", "청약", "집값", "전세", "월세", "신도시",
@@ -75,15 +84,28 @@ DOMAIN = ["LH", "토지주택", "주택", "아파트", "부동산", "임대", "�
 # 제목에 이런 말이 있으면 관련 없는 기사로 보고 버립니다.
 EXCLUDE = ["축제", "플리마켓", "맛집", "공연", "콘서트", "운세", "날씨", "부고", "인사]", "[인사", "결혼", "야구", "축구"]
 
+# 스팸 거르기: 이런 단어가 제목에 있거나, 이런 언론사·주소에서 온 기사는 버립니다.
+SPAM_WORDS = ["카지노", "바카라", "토토", "슬롯", "먹튀", "도박", "베팅", "홀덤", "파워볼", "성인용품", "대출문의"]
+BLOCK_PRESS = []        # 예: ["스팸뉴스", "spam-site.com"]
+
+# 국토교통부 보도자료: 이 분야는 모두, 나머지는 제목에 관련 단어가 있을 때만 모읍니다.
+POLICY_FIELDS = ["주택토지", "건설", "국토도시"]
+POLICY_WORDS = ["주택", "부동산", "LH", "공공", "임대", "분양", "신도시", "택지", "토지", "주거", "전세", "건설", "재건축",
+                "재개발", "정비", "도시"]
+
 N_KEYWORDS = 8          # 주요 키워드 개수
+MIN_DOC_FREQ = 3        # 이보다 적게 나온 키워드는 점수를 낮춥니다
+MAX_OVERLAP = 0.5       # 이미 고른 키워드와 기사가 이만큼 넘게 겹치면 건너뜁니다
 ISSUES_PER_KEYWORD = 5  # 키워드별로 보여줄 이슈 수
-KEEP_DAYS = 14          # 며칠치 기사를 보관할지
-KEEP_BRIEFINGS = 60     # 며칠치 브리핑을 보관할지
+N_ISSUE_TERMS = 30      # '새로 떠오른 단어' 개수
 NAVER_PAGES = 2         # 네이버 검색 결과를 몇 쪽까지 읽을지 (1쪽 = 약 10개 이슈)
+MAX_POLICIES = 300      # 보도자료를 최대 몇 개까지 쌓을지
+RETRIES = 3             # 접속 실패 시 다시 시도할 횟수
 
 KST = timezone(timedelta(hours=9))
-DATA_FILE = Path(__file__).parent / "news-data.js"
-UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36"}
+DATA = Path(__file__).parent / "data"
+UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+      "Accept-Language": "ko-KR,ko;q=0.9"}
 
 # 네이버 검색 API 키 (예비용. 넣어두면 검색 화면 읽기 대신 API를 씁니다)
 NAVER_ID = os.environ.get("NAVER_CLIENT_ID", "")
@@ -104,39 +126,42 @@ PRESS = {
 
 STOP = set("""위해 대한 관련 통해 추진 개최 실시 진행 지역 올해 내년 기자 오늘 있는 없는 이번 최대 가장 대해 한다 했다
 나선다 속도 확대 지원 사업 발표 공급 서울 정부 계획 위한 따른 만에 이후 지난 사진 종합 단독 속보 뉴스 경기 국내
-최초 본격 마련 강화 개선 예정 시작 돌입 완료 선정 체결 협약 업무 기관 공사 주택 부동산 아파트 정책""".split())
+최초 본격 마련 강화 개선 예정 시작 돌입 완료 선정 체결 협약 업무 기관 공사 주택 부동산 아파트 정책
+촉구 착수 직접 차단 도입 시행 점검 논의 검토 우려 전망 필요 대응 방안 나서 거듭 조속 사장 공공기관""".split())
+
+
+# ─────────────────────────────────────────────
+# 기록(log)과 접속
+# ─────────────────────────────────────────────
+LOG = []
+
+
+def log(msg):
+    print(msg)
+    LOG.append(f"{datetime.now(KST):%H:%M:%S} {msg}")
+
+
+# 쿠키를 기억하는 접속기 (국토부 사이트는 쿠키가 없으면 접속이 안 됩니다)
+OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+
+def get(url, headers=None):
+    # 실패하면 2초, 4초 쉬었다가 최대 RETRIES 번까지 다시 시도합니다.
+    for attempt in range(1, RETRIES + 1):
+        try:
+            req = urllib.request.Request(url, headers={**UA, **(headers or {})})
+            with OPENER.open(req, timeout=20) as res:
+                return res.read().decode(res.headers.get_content_charset() or "utf-8", "replace")
+        except Exception as e:
+            if attempt == RETRIES:
+                raise
+            log(f"  … 접속 실패({e}), {2 * attempt}초 후 다시 시도")
+            time.sleep(2 * attempt)
 
 
 # ─────────────────────────────────────────────
 # 수집
 # ─────────────────────────────────────────────
-def get(url, headers=None):
-    req = urllib.request.Request(url, headers={**UA, **(headers or {})})
-    with urllib.request.urlopen(req, timeout=20) as res:
-        raw = res.read()
-        return raw.decode(res.headers.get_content_charset() or "utf-8", "replace")
-
-
-def fetch_google(query):
-    url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(f"{query} when:2d")
-           + "&hl=ko&gl=KR&ceid=KR:ko")
-    root = ET.fromstring(get(url))
-    items = []
-    for rank, item in enumerate(root.iter("item"), 1):
-        title = item.findtext("title", "")
-        source = item.findtext("source", "")
-        # 구글 뉴스 제목은 "기사 제목 - 언론사" 형태라서 뒤쪽 언론사를 떼어냅니다.
-        if source and title.endswith(" - " + source):
-            title = title[: -len(" - " + source)]
-        try:
-            published = parsedate_to_datetime(item.findtext("pubDate", "")).astimezone(KST)
-        except (TypeError, ValueError):
-            continue
-        items.append({"title": title.strip(), "link": item.findtext("link", ""), "source": source,
-                      "date": published.strftime("%Y-%m-%d %H:%M"), "origin": "google", "rank": rank})
-    return items
-
-
 def press_from_url(url):
     host = urllib.parse.urlparse(url).netloc.removeprefix("www.")
     return next((name for dom, name in PRESS.items() if host.endswith(dom)), host)
@@ -155,20 +180,48 @@ def parse_when(text, now):
         return now - timedelta(minutes=n if unit == "분" else n * 60 if unit == "시간" else n * 1440)
     m = re.search(r"(20\d\d)\.(\d{1,2})\.(\d{1,2})\.", text)
     if m:
-        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), 9, tzinfo=KST)
+        return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), 12, tzinfo=KST)
     return now
 
 
-def fetch_naver_web(query):
-    # 네이버 뉴스 검색 화면(최근 1일, 관련도순)을 읽습니다.
+def fetch_google(query, day=None):
+    if day:   # 지난 날짜: 앞뒤 하루를 넉넉히 검색한 뒤 나중에 그 날짜만 남깁니다.
+        span = f"after:{day - timedelta(days=1)} before:{day + timedelta(days=1)}"
+    else:
+        span = "when:1d"
+    url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(f"{query} {span}")
+           + "&hl=ko&gl=KR&ceid=KR:ko")
+    root = ET.fromstring(get(url))
+    items = []
+    for rank, item in enumerate(root.iter("item"), 1):
+        title = item.findtext("title", "")
+        source = item.findtext("source", "")
+        # 구글 뉴스 제목은 "기사 제목 - 언론사" 형태라서 뒤쪽 언론사를 떼어냅니다.
+        if source and title.endswith(" - " + source):
+            title = title[: -len(" - " + source)]
+        try:
+            published = parsedate_to_datetime(item.findtext("pubDate", "")).astimezone(KST)
+        except (TypeError, ValueError):
+            continue
+        # 구글이 관련 기사 목록을 함께 줄 때는 그 개수를 셉니다. (요즘은 대부분 0)
+        google_related = max(0, item.findtext("description", "").count("<li") - 1)
+        items.append({"title": title.strip(), "link": item.findtext("link", ""), "source": source,
+                      "date": published.strftime("%Y-%m-%d %H:%M"), "origin": "google", "rank": rank,
+                      "google_related": google_related})
+    return items
+
+
+def fetch_naver_web(query, day=None):
+    # 네이버 뉴스 검색 화면(최근 1일 또는 지정한 날짜, 관련도순)을 읽습니다.
     # 화면은 [언론사 → 대표 기사 → 묶인 기사들 → '관련뉴스 N건'] 순서로 되어 있습니다.
     # 네이버가 화면 구조를 바꾸면 여기서 기사가 0건이 될 수 있습니다.
     now = datetime.now(KST)
+    period = f"&pd=3&ds={day:%Y.%m.%d}&de={day:%Y.%m.%d}" if day else "&pd=4"
     items, rank = [], 0
     for page in range(NAVER_PAGES):
-        url = ("https://search.naver.com/search.naver?where=news&sort=0&pd=4&start="
-               + str(1 + page * 10) + "&query=" + urllib.parse.quote(query))
-        page_html = get(url, {"Accept-Language": "ko-KR,ko;q=0.9"})
+        url = ("https://search.naver.com/search.naver?where=news&sort=0" + period
+               + "&start=" + str(1 + page * 10) + "&query=" + urllib.parse.quote(query))
+        page_html = get(url)
         cluster, prev_prof = None, False
         for m in re.finditer(r'<a\s[^>]*?href="([^"]+)"[^>]*?data-heatmap-target="(\.[a-z]+)"[^>]*>(.*?)</a>',
                              page_html, re.S):
@@ -176,7 +229,8 @@ def fetch_naver_web(query):
             if mark == ".prof":
                 if not prev_prof:   # 언론사 표시가 나오면 새 이슈 묶음 시작
                     rank += 1
-                    cluster = {"press": "", "start": m.end(), "arts": [], "rank": rank}
+                    cluster = {"press": "", "start": m.end(), "arts": [], "rank": rank,
+                               "id": f"naver:{query}:{rank}"}
                 if text:
                     cluster["press"] = text
             elif mark == ".tit" and cluster and text:
@@ -186,8 +240,8 @@ def fetch_naver_web(query):
                         if first else cluster["arts"][0]["date"])
                 art = {"title": text, "link": href,
                        "source": cluster["press"] if first and cluster["press"] else press_from_url(href),
-                       "date": date, "origin": "naver",
-                       "rank": cluster["rank"], "related": 0}
+                       "date": date, "origin": "naver", "rank": cluster["rank"], "related": 0,
+                       "cluster": cluster["id"]}
                 cluster["arts"].append(art)
                 items.append(art)
             elif mark == ".more" and cluster:
@@ -200,10 +254,11 @@ def fetch_naver_web(query):
     return items
 
 
-def fetch_naver_search(query):
-    if not (NAVER_ID and NAVER_SECRET):
-        return fetch_naver_web(query)
-    url =("https://openapi.naver.com/v1/search/news.json?display=50&sort=sim&query="
+def fetch_naver_search(query, day=None):
+    # 키가 있으면 공식 API(최근 기사만 가능), 없거나 지난 날짜면 검색 화면을 읽습니다.
+    if not (NAVER_ID and NAVER_SECRET) or day:
+        return fetch_naver_web(query, day)
+    url = ("https://openapi.naver.com/v1/search/news.json?display=50&sort=sim&query="
            + urllib.parse.quote(query))
     res = json.loads(get(url, {"X-Naver-Client-Id": NAVER_ID, "X-Naver-Client-Secret": NAVER_SECRET}))
     items = []
@@ -233,6 +288,23 @@ def fetch_naver_ranking():
             items.append({"title": html.unescape(title), "link": link, "source": press,
                           "date": now, "origin": "naver", "rank": rank, "popular": True})
     return items
+
+
+def fetch_molit(pages=2):
+    # 국토교통부 보도자료 목록
+    out = []
+    for page in range(1, pages + 1):
+        page_html = get(f"https://www.molit.go.kr/USR/NEWS/m_71/lst.jsp?lcmspage={page}")
+        for row in re.findall(r"<tr>(.*?)</tr>", page_html, re.S):
+            m = re.search(r'href="dtl\.jsp\?[^"]*?id=(\d+)"[^>]*>(.*?)</a>', row, re.S)
+            field = re.search(r'class="bd_field">(.*?)</td>', row, re.S)
+            day = re.search(r'class="bd_date">(.*?)</td>', row, re.S)
+            if not (m and day):
+                continue
+            out.append({"id": int(m.group(1)), "title": clean(m.group(2)),
+                        "field": clean(field.group(1)) if field else "", "date": clean(day.group(1)),
+                        "link": f"https://www.molit.go.kr/USR/NEWS/m_71/dtl.jsp?id={m.group(1)}"})
+    return out
 
 
 # ─────────────────────────────────────────────
@@ -275,19 +347,24 @@ def matched_keywords(title):
 
 
 def make_issues(articles):
-    # 화제가 될 가능성이 큰 기사(많이 본 뉴스, 검색 상위)를 먼저 대표로 세우고 나머지를 붙입니다.
     for a in articles:
         a["_bg"] = bigrams(norm(a["title"]))
         a["_w"] = words(a["title"])
-    order = sorted(articles, key=lambda a: (not a.get("popular"), a.get("rank", 99)))
+    # 네이버가 이미 묶어 둔 기사는 유사도와 상관없이 한 묶음으로 시작합니다.
+    units = defaultdict(list)
+    for i, a in enumerate(articles):
+        units[a.get("cluster") or f"single:{i}"].append(a)
+    # 화제가 될 가능성이 큰 묶음(많이 본 뉴스, 검색 상위)을 먼저 대표로 세우고 나머지를 붙입니다.
+    order = sorted(units.values(), key=lambda u: (not any(a.get("popular") for a in u),
+                                                   min(a.get("rank", 99) for a in u)))
     issues = []
-    for a in order:
+    for unit in order:
         for iss in issues:
-            if any(similar(a, m) for m in iss["members"][:3]):
-                iss["members"].append(a)
+            if any(similar(a, m) for a in unit[:2] for m in iss["members"][:3]):
+                iss["members"] += unit
                 break
         else:
-            issues.append({"members": [a]})
+            issues.append({"members": list(unit)})
 
     result = []
     for iss in issues:
@@ -297,10 +374,10 @@ def make_issues(articles):
         origins = {m["origin"] for m in ms} | ({"google", "naver"} if any(m.get("origin_both") for m in ms) else set())
         popular = any(m.get("popular") for m in ms)
         best_rank = min(m.get("rank", 99) for m in ms)
-        rank_bonus = 3 if best_rank <= 3 else 2 if best_rank <= 10 else 1 if best_rank <= 20 else 0
-        related = max(m.get("related", 0) for m in ms)   # 네이버 '관련뉴스 N건'
-        hot = (2 * len(sources) + 0.4 * min(related, 30) + (2 if len(origins) > 1 else 0)
-               + (8 if popular else 0) + rank_bonus)
+        related = max(m.get("related", 0) for m in ms)                # 네이버 '관련뉴스 N건'
+        google_related = max(m.get("google_related", 0) for m in ms)  # 구글 관련 기사 수
+        hot = (2 * len(sources) + 0.4 * min(related, 30) + 0.3 * min(google_related, 10)
+               + (2 if len(origins) > 1 else 0) + (8 if popular else 0) + max(0, 3 - 0.15 * best_rank))
         cats = Counter(m["category"] for m in ms if m.get("category"))
         # 같은 언론사 기사는 하나만 남기기
         seen, others = {lead["source"]}, []
@@ -354,30 +431,40 @@ def pick_keywords(sample, history):
                 edges[(a, b)] = w
     pr = pagerank(names, edges) if edges else {n: 1 for n in names}
 
-    # 모멘텀: 오늘 출현율 ÷ 최근 7일 평균 출현율 (최대 3배)
+    # 모멘텀: (오늘 출현율 + 0.01) ÷ (최근 7일 평균 출현율 + 0.01), 최대 3배, 기록이 없으면 1배
     rate = {k: len(v) / len(sample) for k, v in hits.items()}
     past = list(history.values())[-7:]
     mom = {}
     for k in names:
-        avg = sum(h.get(k, 0) for h in past) / len(past) if past else 0
-        mom[k] = min(3, rate[k] / avg) if avg else 1
+        if past:
+            avg = sum(h.get(k, 0) for h in past) / len(past)
+            mom[k] = min(3.0, (rate[k] + 0.01) / (avg + 0.01))
+        else:
+            mom[k] = 1.0
 
     def scale(d):
         top = max(d.values()) or 1
         return {k: v / top for k, v in d.items()}
-    s_hit, s_pr, s_mom = scale({k: len(v) for k, v in hits.items()}), scale(pr), scale(mom)
-    score = {k: 0.45 * s_hit[k] + 0.35 * s_pr[k] + 0.20 * s_mom[k] for k in names}
+    s_hit, s_pr = scale({k: len(v) for k, v in hits.items()}), scale(pr)
+    score = {}
+    for k in names:
+        score[k] = 0.45 * s_hit[k] + 0.35 * s_pr[k] + 0.20 * (mom[k] / 3)
+        if len(hits[k]) < MIN_DOC_FREQ:
+            score[k] *= 0.3
 
-    # 점수 순으로 고르되, 이미 고른 키워드와 기사가 50% 넘게 겹치면 건너뜀
+    # 점수 순으로 고르되, 이미 고른 키워드와 기사가 많이 겹치면 건너뜀
     chosen = []
     for k in sorted(names, key=lambda k: -score[k]):
-        if len(hits[k]) < 2:
-            continue
-        if any(len(hits[k] & hits[c]) / len(hits[k]) > 0.5 for c in chosen):
+        if any(len(hits[k] & hits[c]) / len(hits[k]) > MAX_OVERLAP for c in chosen):
             continue
         chosen.append(k)
         if len(chosen) == N_KEYWORDS:
             break
+    for k in FALLBACK_KEYWORDS:   # 모자라면 기본 키워드로 채우기
+        if len(chosen) >= N_KEYWORDS:
+            break
+        if k in hits and k not in chosen:
+            chosen.append(k)
 
     result = []
     for k in chosen:
@@ -396,76 +483,125 @@ def pick_keywords(sample, history):
     return result, rate
 
 
-# ─────────────────────────────────────────────
-# 저장된 데이터 불러오기 / 실행
-# ─────────────────────────────────────────────
-def load_existing():
-    if not DATA_FILE.exists():
-        return {}
-    text = DATA_FILE.read_text(encoding="utf-8")
-    return json.loads(text[text.index("{"):].rstrip().rstrip(";"))
+def find_issue_terms(sample):
+    # 이슈어: 후보 키워드 목록에 없는데 오늘 여러 기사(3건 이상)에 나온 단어
+    known = [s for _, syns in KEYWORDS.values() for s in syns] + list(KEYWORDS)
+    df = Counter()
+    for a in sample:
+        for w in words(a["title"]):
+            if not any(s in w or w in s for s in known):
+                df[w] += 1
+    return [[w, n] for w, n in df.most_common(N_ISSUE_TERMS) if n >= 3]
 
 
-def collect():
+# ─────────────────────────────────────────────
+# 파일 읽고 쓰기
+# ─────────────────────────────────────────────
+def read_js(path, prefix):
+    if not path.exists():
+        return None
+    text = path.read_text(encoding="utf-8").strip()
+    return json.loads(text[len(prefix):].rstrip(";").rstrip(")"))
+
+
+def write_js(path, prefix, obj, suffix=";"):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(prefix + json.dumps(obj, ensure_ascii=False) + suffix + "\n", encoding="utf-8")
+
+
+def update_policies():
+    path = DATA / "policies.js"
+    old = read_js(path, "window.POLICIES = ") or []
+    by_id = {p["id"]: p for p in old}
+    new = 0
+    for p in fetch_molit():
+        if p["field"] in POLICY_FIELDS or any(w in p["title"] for w in POLICY_WORDS):
+            if p["id"] not in by_id:
+                new += 1
+            by_id[p["id"]] = p
+    policies = sorted(by_id.values(), key=lambda p: (p["date"], p["id"]), reverse=True)[:MAX_POLICIES]
+    write_js(path, "window.POLICIES = ", policies)
+    log(f"국토부 보도자료: 새로 {new}건, 총 {len(policies)}건")
+
+
+def rebuild_index():
+    index = []
+    for f in sorted((DATA / "days").glob("*.js")):
+        try:
+            d = read_js(f, "window.__newsDay(")
+        except Exception as e:
+            log(f"  ! {f.name} 읽기 실패, 목록에서 제외: {e}")
+            continue
+        index.append({"date": d["date"], "sample": d["sample"], "issues": d["issue_count"],
+                      "keywords": [k["name"] for k in d["keywords"]],
+                      "top": d["top"][0]["title"] if d["top"] else ""})
+    write_js(DATA / "index.js", "window.NEWS_INDEX = ", index)
+
+
+# ─────────────────────────────────────────────
+# 실행
+# ─────────────────────────────────────────────
+def collect(day=None):
     found = []
     for category, queries in CATEGORIES.items():
         for query in queries:
             for name, fn in (("구글", fetch_google), ("네이버", fetch_naver_search)):
                 try:
-                    res = fn(query)
+                    res = fn(query, day)
                 except Exception as e:
-                    print(f"  ! {name} '{query}' 실패: {e}")
+                    log(f"  ! {name} '{query}' 실패: {e}")
                     continue
                 for a in res:
                     a["category"] = category
                 found += res
-                if res:
-                    print(f"  {name} · {category} / {query}: {len(res)}건")
-    try:
-        ranking = fetch_naver_ranking()
-        related = []
-        for a in ranking:
-            ks = matched_keywords(a["title"])
-            if ks:
-                a["category"] = KEYWORDS[ks[0]][0]
-                related.append(a)
-        print(f"  네이버 많이 본 뉴스: {len(ranking)}건 중 관련 {len(related)}건")
-        found += related
-    except Exception as e:
-        print(f"  ! 네이버 많이 본 뉴스 실패: {e}")
-    return [a for a in found if a["title"]
-            and any(x in a["title"] for x in DOMAIN)
-            and not any(x in a["title"] for x in EXCLUDE)]
+                log(f"  {name} · {category} / {query}: {len(res)}건")
+    if not day:   # 많이 본 뉴스는 '지금' 순위만 볼 수 있어서 지난 날짜에는 건너뜁니다.
+        try:
+            ranking = fetch_naver_ranking()
+            related = []
+            for a in ranking:
+                ks = matched_keywords(a["title"])
+                if ks:
+                    a["category"] = KEYWORDS[ks[0]][0]
+                    related.append(a)
+            log(f"  네이버 많이 본 뉴스: {len(ranking)}건 중 관련 {len(related)}건")
+            found += related
+        except Exception as e:
+            log(f"  ! 네이버 많이 본 뉴스 실패: {e}")
+
+    def ok(a):
+        t = a["title"]
+        if any(w in t for w in SPAM_WORDS) or any(b and (b in a["source"] or b in a["link"]) for b in BLOCK_PRESS):
+            return False
+        return t and any(x in t for x in DOMAIN) and not any(x in t for x in EXCLUDE)
+    kept = [a for a in found if ok(a)]
+    log(f"수집 {len(found)}건 → 스팸·무관 기사 제외 후 {len(kept)}건")
+    return kept
 
 
 def main():
-    old = load_existing()
-    articles = old.get("articles", [])
-    briefings = old.get("briefings", {})
-    history = old.get("history", {})
-
-    found = collect()
-
-    # 원본 기사 보관함: 같은 기사는 한 번만 (네이버 많이 본 뉴스 표시는 이어받기)
-    by_key = {norm(a["title"])[:30]: a for a in articles}
-    for a in found:
-        key = norm(a["title"])[:30]
-        if key in by_key:
-            if a.get("popular"):
-                by_key[key]["popular"] = True
-            continue
-        by_key[key] = {k: a[k] for k in ("title", "link", "source", "date", "origin", "category")}
-        if a.get("popular"):
-            by_key[key]["popular"] = True
     now = datetime.now(KST)
-    cutoff = (now - timedelta(days=KEEP_DAYS)).strftime("%Y-%m-%d")
-    articles = sorted((a for a in by_key.values() if a["date"] >= cutoff), key=lambda a: a["date"], reverse=True)
+    day = Date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 and sys.argv[1].strip() else None
+    today = str(day) if day else now.strftime("%Y-%m-%d")
+    runner = "github" if os.environ.get("GITHUB_ACTIONS") else "pc"
+    log(f"=== {today} 수집 시작 ({'지난 날짜' if day else '오늘'}, {runner}) ===")
 
-    # 오늘의 브리핑: 최근 24시간 표본으로 이슈·키워드 분석
-    since = (now - timedelta(hours=24)).strftime("%Y-%m-%d %H:%M")
+    # GitHub 서버에서는 네이버 검색이 막혀서, 내 PC가 이미 모은 날짜는 덮어쓰지 않습니다.
+    existing = read_js(DATA / "days" / f"{today}.js", "window.__newsDay(")
+    if runner == "github" and existing and existing.get("runner") == "pc":
+        log("내 PC가 이미 수집한 날짜라서 건너뜁니다.")
+        return
+
+    found = collect(day)
+
+    # 분석 표본: 오늘은 최근 24시간, 지난 날짜는 그날 하루
+    if day:
+        start, end = f"{day} 00:00", f"{day} 23:59"
+    else:
+        start, end = (now - timedelta(hours=24)).strftime("%Y-%m-%d %H:%M"), "9999"
     sample = {}
     for a in found:
-        if a["date"] < since:
+        if not (start <= a["date"] <= end):
             continue
         key = norm(a["title"])[:30] + a["source"]
         if key in sample:   # 여러 검색어에 걸린 같은 기사는 한 번만 (더 좋은 순위·표시 유지)
@@ -473,41 +609,51 @@ def main():
             b["rank"] = min(b["rank"], a["rank"])
             b["popular"] = b.get("popular") or a.get("popular")
             b["related"] = max(b.get("related", 0), a.get("related", 0))
+            b["google_related"] = max(b.get("google_related", 0), a.get("google_related", 0))
             if a["origin"] != b["origin"]:
                 b["origin_both"] = True
         else:
             sample[key] = dict(a)
     sample = list(sample.values())
-    issues = make_issues(sample)
-    today = now.strftime("%Y-%m-%d")
-    past_history = {d: h for d, h in history.items() if d < today}
-    keywords, rate = pick_keywords(sample, past_history)
 
+    issues = make_issues(sample)
+    hist_path = DATA / "keyword_history.json"
+    history = json.loads(hist_path.read_text(encoding="utf-8")) if hist_path.exists() else {}
+    past = {d: h for d, h in sorted(history.items()) if d < today}
+    keywords, rate = pick_keywords(sample, past)
     for kw in keywords:
         kw["issues"] = [i for i in issues if kw["name"] in i["keywords"]][:ISSUES_PER_KEYWORD]
-    by_cat = {c: [i for i in issues if i["category"] == c][:3] for c in CATEGORIES}
 
-    briefings[today] = {
+    articles = sorted(({k: a[k] for k in ("title", "link", "source", "date", "origin", "category")}
+                       | ({"popular": True} if a.get("popular") else {}) for a in sample),
+                      key=lambda a: a["date"], reverse=True)
+    write_js(DATA / "days" / f"{today}.js", "window.__newsDay(", {
+        "date": today,
         "updated": now.strftime("%Y-%m-%d %H:%M"),
+        "runner": runner,
         "sample": len(sample),
         "issue_count": len(issues),
         "top": issues[:5],
         "keywords": keywords,
-        "by_category": by_cat,
-    }
-    history[today] = {k: round(v, 4) for k, v in rate.items()}
-    keep = sorted(briefings)[-KEEP_BRIEFINGS:]
-
-    data = {
-        "updated": now.strftime("%Y-%m-%d %H:%M"),
-        "categories": list(CATEGORIES.keys()),
+        "by_category": {c: [i for i in issues if i["category"] == c][:3] for c in CATEGORIES},
+        "issue_terms": find_issue_terms(sample),
         "articles": articles,
-        "briefings": {d: briefings[d] for d in keep},
-        "history": {d: history[d] for d in sorted(history)[-30:]},
-    }
-    DATA_FILE.write_text("window.NEWS_DATA = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
-    print(f"표본 {len(sample)}건 → 이슈 {len(issues)}개, 키워드 {[k['name'] for k in keywords]}")
-    print(f"보관 기사 {len(articles)}건 저장")
+    }, ");")
+    history[today] = {k: round(v, 4) for k, v in rate.items()}
+    hist_path.write_text(json.dumps(dict(sorted(history.items())), ensure_ascii=False, indent=1), encoding="utf-8")
+    log(f"표본 {len(sample)}건 → 이슈 {len(issues)}개, 키워드 {[k['name'] for k in keywords]}")
+
+    if not day:
+        try:
+            update_policies()
+        except Exception as e:
+            log(f"  ! 국토부 보도자료 실패: {e}")
+    rebuild_index()
+
+    log_path = DATA / "logs" / f"{today}.log"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("a", encoding="utf-8") as f:
+        f.write("\n".join(LOG) + "\n")
 
 
 if __name__ == "__main__":

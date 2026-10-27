@@ -134,6 +134,7 @@
     <nav class="tabs">
       <button class="tab on" data-view="brief">오늘의 브리핑</button>
       <button class="tab" data-view="list">전체 기사</button>
+      <button class="tab" data-view="policy">국토부 보도자료</button>
       <button class="tab" data-view="scrap">★ 스크랩·메모</button>
     </nav>
   </div>
@@ -167,14 +168,21 @@
     </section>
 
     <section class="box">
+      <h2>새로 떠오른 단어</h2>
+      <p class="desc">후보 키워드 목록에는 없지만 이날 기사 3건 이상에 나온 단어 · 누르면 전체 기사에서 검색</p>
+      <div class="words" id="terms"></div>
+    </section>
+
+    <section class="box">
       <details class="how">
         <summary>선정 기준 보기</summary>
         <ol>
-          <li><b>기사 모으기</b> · 분야별 검색어로 구글 뉴스(최근 2일)와 네이버 뉴스 검색(최근 1일, 관련도순 2쪽)을 하고, 네이버 ‘언론사별 많이 본 뉴스’에서 부동산·공공 관련 기사를 더합니다. 그중 최근 24시간 기사가 분석 표본입니다. 관련 단어(주택·LH·부동산·건설 등)가 없는 기사와 축제·연예 기사는 뺍니다.</li>
-          <li><b>이슈 묶기</b> · 제목의 글자 짝이 절반 넘게 겹치거나 핵심 단어가 3개 이상 겹치면 같은 이슈로 묶습니다. ‘관련 보도 N건’은 직접 확인한 언론사 수와 네이버 검색의 ‘관련뉴스 N건’ 중 큰 값입니다.</li>
-          <li><b>화제도</b> = 2 × 보도 언론사 수 + 0.4 × 네이버 관련뉴스 수(최대 30) + 2(구글·네이버 양쪽에 노출) + 8(네이버 많이 본 뉴스에 포함) + 검색 순위 가점(최대 3)</li>
-          <li><b>주요 키워드</b> · 후보 키워드(동의어 포함)마다 점수 = 0.45 × 출현 기사 수 + 0.35 × 연관 중심성(함께 나온 키워드 연결망의 PageRank) + 0.20 × 모멘텀(최근 7일 평균 대비 오늘 출현율, 최대 3배). 각 항목은 최댓값 기준 0~1로 환산합니다. 이미 고른 키워드와 기사가 50% 넘게 겹치면 건너뛰어 서로 다른 주제를 고릅니다.</li>
+          <li><b>기사 모으기</b> · 분야별 검색어로 구글 뉴스(최근 1일)와 네이버 뉴스 검색(최근 1일, 관련도순 2쪽)을 하고, 네이버 ‘언론사별 많이 본 뉴스’에서 부동산·공공 관련 기사를 더합니다. 그중 최근 24시간 기사가 분석 표본입니다(지난 날짜를 나중에 수집한 경우 그날 하루, 많이 본 뉴스 제외). 관련 단어(주택·LH·부동산·건설 등)가 없는 기사, 축제·연예 기사, 도박 광고 같은 스팸은 뺍니다.</li>
+          <li><b>이슈 묶기</b> · 네이버가 이미 묶어 둔 기사는 한 이슈로 시작하고, 제목의 글자 짝이 절반 넘게 겹치거나 핵심 단어가 3개 이상 겹치면 같은 이슈로 묶습니다. ‘관련 보도 N건’은 직접 확인한 언론사 수와 네이버 검색의 ‘관련뉴스 N건’ 중 큰 값입니다.</li>
+          <li><b>화제도</b> = 2 × 보도 언론사 수 + 0.4 × 네이버 관련뉴스 수(최대 30) + 0.3 × 구글 관련기사 수(최대 10) + 2(구글·네이버 양쪽에 노출) + 8(네이버 많이 본 뉴스에 포함) + 검색 순위 가점(3 − 0.15 × 순위, 최소 0)</li>
+          <li><b>주요 키워드</b> · 후보 키워드(동의어 포함)마다 점수 = 0.45 × 출현 기사 수 + 0.35 × 연관 중심성(함께 나온 키워드 연결망의 PageRank) + 0.20 × 모멘텀 ÷ 3. 출현과 중심성은 최댓값 기준 0~1로 환산합니다. 모멘텀 = (오늘 출현율 + 0.01) ÷ (최근 7일 평균 출현율 + 0.01), 최대 3배, 기록이 없으면 1배입니다. 3건 미만으로 나온 키워드는 점수를 0.3배로 낮춥니다. 이미 고른 키워드와 기사가 50% 넘게 겹치면 건너뛰어 서로 다른 주제를 고르고, 모자라면 기본 키워드로 채웁니다.</li>
           <li><b>함께 많이 쓰인 표현</b> · 그 키워드가 나온 기사 제목에 함께 자주 나온 단어(괄호 안은 기사 수)</li>
+          <li><b>새로 떠오른 단어</b> · 후보 키워드와 동의어에 없는 단어 중 3건 이상의 기사에 나온 단어를 많은 순으로 최대 30개</li>
         </ol>
       </details>
     </section>
@@ -197,15 +205,46 @@
     </section>
     <section class="list" id="list"></section>
   </div>
+
+  <!-- 국토부 보도자료 -->
+  <div id="policyView" hidden>
+    <div class="tools">
+      <input id="psearch" type="search" placeholder="보도자료 제목 검색">
+    </div>
+    <div class="cats" id="pfields"></div>
+    <section class="list" id="plist"></section>
+  </div>
 </main>
 
-<!-- collect.py 가 만든 기사·브리핑 데이터 -->
-<script src="news-data.js"></script>
+<!-- collect.py 가 만든 데이터: 날짜 목록과 국토부 보도자료 (날짜별 기사는 필요할 때 불러옵니다) -->
+<script src="data/index.js"></script>
+<script src="data/policies.js"></script>
 <script>
-  const data = window.NEWS_DATA || { updated: "-", categories: [], articles: [], briefings: {} };
-  const briefings = data.briefings || {};
-  const dates = Object.keys(briefings).sort();
-  const state = { view: "brief", date: dates[dates.length - 1], cat: "전체", q: "", days: 7 };
+  const INDEX = window.NEWS_INDEX || [];
+  const POLICIES = window.POLICIES || [];
+  const CATEGORIES = ["LH 기관 소식", "공공주택·임대", "신도시·택지", "부동산 정책", "주거복지", "도시재생·정비", "사건·감사·안전", "공공기관 경영"];
+  const dates = INDEX.map(d => d.date).sort();
+  const state = { view: "brief", date: dates[dates.length - 1], cat: "전체", q: "", days: 7, pq: "", pfield: "전체" };
+
+  // 날짜별 파일(data/days/날짜.js)을 필요할 때 불러옵니다.
+  const dayCache = {};
+  let pendingDay = null;
+  window.__newsDay = d => { dayCache[d.date] = d; if (pendingDay) pendingDay(d); };
+  function loadDay(date) {
+    if (dayCache[date]) return Promise.resolve(dayCache[date]);
+    return new Promise(resolve => {
+      const s = document.createElement("script");
+      s.src = `data/days/${date}.js`;
+      pendingDay = d => { if (d.date === date) resolve(d); };
+      s.onerror = () => resolve(null);
+      document.body.appendChild(s);
+    }).then(d => { pendingDay = null; return d; });
+  }
+  async function loadDays(list) {
+    const out = [];
+    for (const d of list) out.push(await loadDay(d));   // 하나씩 차례로 불러오기
+    return out.filter(Boolean);
+  }
 
   // 스크랩(★)과 메모는 이 브라우저에만 저장됩니다.
   function load(key) { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } }
@@ -255,9 +294,17 @@
     </div>`;
   }
 
-  function renderBrief() {
-    const b = briefings[state.date];
-    if (!b) { $("kwgrid").innerHTML = `<div class="empty">브리핑 데이터가 없습니다.</div>`; return; }
+  let drawId = 0;   // 날짜를 빠르게 바꿀 때 늦게 도착한 옛 데이터로 덮어쓰지 않도록
+
+  async function renderBrief() {
+    const id = ++drawId;
+    const b = state.date ? await loadDay(state.date) : null;
+    if (id !== drawId) return;
+    if (!b) {
+      $("kwgrid").innerHTML = `<div class="empty">브리핑 데이터가 없습니다.</div>`;
+      $("top").innerHTML = $("kwissues").innerHTML = $("bycat").innerHTML = $("terms").innerHTML = "";
+      return;
+    }
     $("kwgrid").innerHTML = b.keywords.map((k, n) => `
       <button class="kw" data-goto="kw-${n}">
         <div class="meta">${esc(k.category)}</div>
@@ -269,17 +316,33 @@
       <h3 id="kw-${n}">“${esc(k.name)}” <span class="meta">관련 기사 ${k.count}건 · 점수 ${k.score} (출현 ${k.hit} · 중심성 ${k.central} · 모멘텀 ${k.momentum}배)</span></h3>
       ${k.issues.map(i => issueHTML(i)).join("")}`).join("");
     $("bycat").innerHTML = Object.entries(b.by_category).map(([c, list]) => `
-      <div><h3>${esc(c)}</h3>${list.length ? list.map(i => issueHTML(i, 0, true)).join("") : `<div class="meta">오늘은 큰 이슈가 없어요</div>`}</div>`).join("");
+      <div><h3>${esc(c)}</h3>${list.length ? list.map(i => issueHTML(i, 0, true)).join("") : `<div class="meta">이날은 큰 이슈가 없어요</div>`}</div>`).join("");
+    $("terms").innerHTML = (b.issue_terms || []).length
+      ? b.issue_terms.map(([w, n]) => `<button class="word" data-term="${esc(w)}">${esc(w)} ${n}</button>`).join("")
+      : `<span class="meta">없음</span>`;
     $("updated").textContent = `${fmtDay(state.date)} 브리핑 · 분석 기사 ${b.sample}건 → 이슈 ${b.issue_count}개 · 수집 ${b.updated}`;
   }
 
   // ── 전체 기사 / 스크랩 ──
-  function filtered() {
-    const now = new Date();
-    const from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (state.days - 1));
+  let listArticles = [];   // 기간 안의 날짜 파일들에서 모은 기사 (같은 링크는 한 번만)
+
+  async function loadPeriod() {
+    const last = dates[dates.length - 1];
+    if (!last) { listArticles = []; return; }
+    const from = new Date(last + "T00:00:00");
+    from.setDate(from.getDate() - (state.days - 1));
     const fromStr = `${from.getFullYear()}-${String(from.getMonth() + 1).padStart(2, "0")}-${String(from.getDate()).padStart(2, "0")}`;
-    return data.articles.filter(a =>
-      a.date.slice(0, 10) >= fromStr &&
+    const days = await loadDays(dates.filter(d => d >= fromStr).reverse());
+    const seen = new Set();
+    listArticles = [];
+    days.forEach(d => (d.articles || []).forEach(a => {
+      if (!seen.has(a.link) && a.date.slice(0, 10) >= fromStr) { seen.add(a.link); listArticles.push(a); }
+    }));
+    listArticles.sort((a, b) => b.date.localeCompare(a.date));
+  }
+
+  function filtered() {
+    return listArticles.filter(a =>
       (state.cat === "전체" || a.category === state.cat) &&
       (!state.q || a.title.includes(state.q)));
   }
@@ -326,7 +389,7 @@
     list = filtered();
     const counts = {};
     all.forEach(a => counts[a.category] = (counts[a.category] || 0) + 1);
-    $("cats").innerHTML = ["전체", ...data.categories].map(c =>
+    $("cats").innerHTML = ["전체", ...CATEGORIES].map(c =>
       `<button class="chip ${c === state.cat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)} ${c === "전체" ? all.length : (counts[c] || 0)}</button>`).join("");
     renderWords(list);
     if (!list.length) { $("list").innerHTML = `<div class="empty">조건에 맞는 기사가 없습니다.</div>`; return; }
@@ -339,19 +402,42 @@
     $("list").innerHTML = html;
   }
 
-  function render() {
+  // ── 국토부 보도자료 ──
+  function renderPolicy() {
+    const fields = {};
+    POLICIES.forEach(p => fields[p.field] = (fields[p.field] || 0) + 1);
+    $("pfields").innerHTML = [["전체", POLICIES.length], ...Object.entries(fields).sort((a, b) => b[1] - a[1])].map(([f, n]) =>
+      `<button class="chip ${f === state.pfield ? "on" : ""}" data-pfield="${esc(f)}">${esc(f || "기타")} ${n}</button>`).join("");
+    const list = POLICIES.filter(p =>
+      (state.pfield === "전체" || p.field === state.pfield) && (!state.pq || p.title.includes(state.pq)));
+    let html = "", lastDay = "";
+    list.forEach(p => {
+      if (p.date !== lastDay) { html += `<div class="day">${fmtDay(p.date)}</div>`; lastDay = p.date; }
+      html += itemHTML({ title: p.title, link: p.link, source: "국토교통부", date: p.date, category: p.field });
+    });
+    $("plist").innerHTML = html || `<div class="empty">보도자료가 없습니다.</div>`;
+    $("updated").textContent = `국토교통부 보도자료 중 주택·토지·건설·도시 관련 ${POLICIES.length}건`;
+  }
+
+  async function render(reload) {
     document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.view === state.view));
     $("brief").hidden = state.view !== "brief";
-    $("listView").hidden = state.view === "brief";
+    $("listView").hidden = !["list", "scrap"].includes(state.view);
+    $("policyView").hidden = state.view !== "policy";
     $("datenav").hidden = state.view !== "brief";
-    if (state.view === "brief") renderBrief();
-    else {
-      $("updated").textContent = `마지막 수집: ${data.updated} · 보관 기사 ${data.articles.length}건`;
-      renderList();
-    }
     const i = dates.indexOf(state.date);
     $("prev").disabled = i <= 0;
     $("next").disabled = i >= dates.length - 1;
+    if (state.view === "brief") return renderBrief();
+    if (state.view === "policy") return renderPolicy();
+    if (state.view === "list" && (reload || !listArticles.length)) {
+      $("list").innerHTML = `<div class="empty">기사를 불러오는 중…</div>`;
+      await loadPeriod();
+    }
+    $("updated").textContent = state.view === "scrap"
+      ? "★를 누른 기사와 메모 (이 브라우저에만 저장)"
+      : `최근 ${state.days}일 기사 ${listArticles.length}건`;
+    renderList();
   }
 
   // ── 이벤트 ──
@@ -365,7 +451,13 @@
   };
   $("cats").onclick = e => { const b = e.target.closest("[data-cat]"); if (b) { state.cat = b.dataset.cat; render(); } };
   $("search").oninput = e => { state.q = e.target.value.trim(); render(); };
-  $("period").onchange = e => { state.days = +e.target.value; render(); };
+  $("period").onchange = e => { state.days = +e.target.value; render(true); };
+  $("psearch").oninput = e => { state.pq = e.target.value.trim(); render(); };
+  $("pfields").onclick = e => { const b = e.target.closest("[data-pfield]"); if (b) { state.pfield = b.dataset.pfield; render(); } };
+  $("terms").onclick = e => {
+    const b = e.target.closest("[data-term]"); if (!b) return;
+    state.view = "list"; state.cat = "전체"; state.q = b.dataset.term; $("search").value = state.q; render();
+  };
   $("words").onclick = e => {
     const b = e.target.closest("[data-word]"); if (!b) return;
     $("search").value = b.dataset.word; state.q = b.dataset.word; render();
@@ -380,10 +472,10 @@
     else stars[k] = { title: b.dataset.title, source: b.dataset.source, date: b.dataset.date };
     save("lh-stars", stars); render();
   });
-  $("list").oninput = e => {
+  document.querySelector("main").addEventListener("input", e => {
     const t = e.target.closest("[data-memo]"); if (!t) return;
     memos[t.dataset.memo] = t.value; save("lh-memos", memos);
-  };
+  });
 
   render();
 </script>
