@@ -493,3 +493,13 @@ Already up to date.
   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
 정책 시각: 긍정 1개, 비판 0개 이슈에 붙임
 표본 628건 → 이슈 256개 (LH 관련 92개, 정책 12개), 키워드 ['LH', '신도시·택지', '노후계획도시', '도시재생', '주택공급', '재건축·재개발', '전월세', '공공임대']
+warning: in the working copy of 'data/logs/pc-run.log', LF will be replaced by CRLF the next time Git touches it
+[main 4c12a12] news collect (PC) 2026-10-27
+ 11 files changed, 739 insertions(+), 51 deletions(-)
+ create mode 100644 data/days/2026-10-23.js
+ create mode 100644 data/days/2026-10-25.js
+ create mode 100644 data/logs/2026-10-23.log
+ create mode 100644 data/logs/2026-10-25.log
+To https://github.com/yeinchoi-PNU/LH-news.git
+   b66c561..4c12a12  main -> main
+===== 2026-10-27 18:29:31.89 end ===== 

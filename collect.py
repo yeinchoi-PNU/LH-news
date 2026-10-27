@@ -117,7 +117,7 @@ TONE_POS = ["기대", "환영", "호평", "긍정", "효과", "안정", "숨통"
 # 사설·칼럼도 함께 찾습니다. 제목이 이런 표시로 시작하면 '칼럼'으로 봅니다.
 OPINION_MARK = re.compile(r"^\s*[\[【<〈(]?\s*(사설|칼럼|시론|기고|오피니언|데스크|기자수첩|논단|포럼|시평|시각|사설·칼럼|"
                           r"기자의 ?눈|취재수첩|목멱칼럼|경제칼럼|아침을 열며|아침햇발|만물상|횡설수설|분수대|여적|씨줄날줄)")
-OPINION_DAYS = 3       # 사설·칼럼과 반응 기사는 최근 며칠 것까지 볼지
+OPINION_DAYS = 30      # 사설·칼럼과 찬반 반응 기사는 최근 며칠 것까지 볼지 (오늘 기사가 아니어도 됨)
 # 한쪽 시각이 비면 정책 핵심 단어에 이 말을 붙여 반응 기사를 더 찾습니다.
 VIEW_QUERIES = {"pos": ["기대", "환영"], "neg": ["우려", "비판"]}
 
@@ -518,7 +518,7 @@ def add_views(iss, day=None, used=None):
             if key and key not in views:
                 used.add(a["link"])
                 views[key] = {"title": a["title"], "link": a["link"], "source": a["source"],
-                              "opinion": bool(OPINION_MARK.search(a["title"]))}
+                              "date": a["date"][:10], "opinion": bool(OPINION_MARK.search(a["title"]))}
 
     # 1차: 같은 이슈로 묶인 기사 + 최근 사설·칼럼
     pick(list(iss["_ms"]) + search("사설", True) + search("칼럼", True))

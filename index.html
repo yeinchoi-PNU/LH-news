@@ -201,7 +201,7 @@
   <div id="policyView" hidden>
     <section class="box">
       <h2>오늘의 부동산 정책 이슈</h2>
-      <p class="desc">대책·규제·대출·세제·국토부 발표 등 정책 방향을 다룬 기사를 묶어 화제도 순으로 정렬 (LH가 직접 나오는 기사는 브리핑에서 봅니다) · 이슈마다 화제도가 가장 높은 긍정 시각·비판 시각 기사(최근 3일 사설·칼럼 포함)를 하나씩 보여줍니다</p>
+      <p class="desc">대책·규제·대출·세제·국토부 발표 등 정책 방향을 다룬 기사를 묶어 화제도 순으로 정렬 (LH가 직접 나오는 기사는 브리핑에서 봅니다) · 이슈마다 화제도가 가장 높은 긍정 시각·비판 시각 기사(최근 30일 기사·사설·칼럼 포함)를 하나씩 보여줍니다</p>
       <div id="ptop"></div>
     </section>
     <section class="box">
@@ -303,7 +303,7 @@
     const row = (key, label) => {
       const a = v[key];
       return `<div class="view ${key}"><span class="vlabel">${label}</span>${a
-        ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a> <span class="meta">${esc(a.source)}${a.opinion ? " · 칼럼" : ""}</span>`
+        ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a> <span class="meta">${esc(a.source)}${a.date ? " · " + esc(a.date.slice(5).replace("-", ".")) : ""}${a.opinion ? " · 칼럼" : ""}</span>`
         : `<span class="meta">뚜렷한 기사를 찾지 못했어요</span>`}</div>`;
     };
     return `<div class="views">${row("pos", "👍 긍정 시각")}${row("neg", "👎 비판 시각")}</div>`;
