@@ -457,10 +457,12 @@ def make_issues(articles):
     return result
 
 
-def tone(a):
+def tone(a, core=()):
     # 긍정 단어 수 − 1.5 × 비판 단어 수 로 시각을 판단: 긍정(+1), 비판(-1), 판단 어려움(0)
     # 비판 표현이 더 드물고 뜻이 분명해서 1.5배로 셉니다.
-    text = a["title"] + " " + a.get("desc", "")
+    # 다른 주제에 대한 찬반이 섞이지 않도록 제목과, 요약문 중 정책 핵심 단어(core)가 있는 문장만 봅니다.
+    sentences = re.split(r"(?<=[.?!…])\s+|\.\.\.", a.get("desc", ""))
+    text = a["title"] + " " + " ".join(s for s in sentences if any(w in s for w in core))
     if OPINION_MARK.search(a["title"]):
         # 칼럼은 글쓴이의 생각이 중요하므로 따옴표 안(남의 말을 옮긴 부분)은 빼고 봅니다.
         text = re.sub(r"\"[^\"]*(\"|$)|“[^”]*(”|$)", " ", text)   # 요약이 잘려 닫는 따옴표가 없어도 지움
@@ -513,7 +515,7 @@ def add_views(iss, day=None, used=None):
         for a in sorted(cands, key=lambda a: -article_hot(a)):
             if a["link"] in used or a["link"] == iss["link"] or not relevant(a):
                 continue
-            t = tone(a)
+            t = tone(a, q.split())
             key = "pos" if t > 0 else "neg" if t < 0 else None
             if key and key not in views:
                 used.add(a["link"])
