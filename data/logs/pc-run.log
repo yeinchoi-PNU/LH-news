@@ -503,3 +503,12 @@ warning: in the working copy of 'data/logs/pc-run.log', LF will be replaced by C
 To https://github.com/yeinchoi-PNU/LH-news.git
    b66c561..4c12a12  main -> main
 ===== 2026-10-27 18:29:31.89 end ===== 
+ 
+===== 2026-10-28  8:17:50.33 start ===== 
+From https://github.com/yeinchoi-PNU/LH-news
+   032927a..4b40058  main       -> origin/main
+Updating 032927a..4b40058
+warning: in the working copy of 'data/logs/pc-run.log', LF will be replaced by CRLF the next time Git touches it
+error: unable to unlink old 'data/logs/pc-run.log': Invalid argument
+fatal: could not reset --hard
+Created autostash: 19a19e7

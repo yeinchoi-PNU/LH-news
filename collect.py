@@ -419,7 +419,7 @@ def is_notice(title):
     # 'N월 분양', '…임대주택 4663가구 공급'처럼 공급 물량만 알리는 제목도 공지로 봅니다.
     return (any(w in title for w in LH_NOTICE) or bool(re.search(r"\d+월 (분양|공급|청약)", title))
             or bool(re.search(r"(임대주택|행복주택|공공임대|매입임대|전세임대|국민임대|공공분양|든든전세)\s*"
-                              r"(\d[\d,]*\s*(호|가구|세대)\s*)?공급\s*$", title)))
+                              r"(\d[\d,]*\s*(호|가구|세대)\s*공급|공급\s*$)", title)))
 
 
 def make_issues(articles):
@@ -454,7 +454,9 @@ def make_issues(articles):
         google_related = max(m.get("google_related", 0) for m in ms)  # 구글 관련 기사 수
         # 같은 묶음의 다른 기사 제목이 '모집'이라고 쓴 경우도 있어서, 묶음 전체 제목을 봅니다.
         notice = sum(is_notice(m["title"]) for m in ms) * 3 >= len(ms) or is_notice(lead["title"])
-        lh = 0 if notice else max(lh_level(m) for m in ms)
+        # 묶인 기사 중 3분의 1 이상이 LH 관련이어야 LH 이슈로 봅니다. (한 기사가 스치듯 언급한 경우는 제외)
+        levels = [lh_level(m) for m in ms]
+        lh = 0 if notice or sum(l > 0 for l in levels) * 3 < len(ms) else max(levels)
         policy = (not notice and any(w in m["title"] for m in ms for w in POLICY_TOPIC)
                   and not any(w in lead["title"] for w in POLICY_EXCLUDE))
         hot = (2 * len(sources) + 0.4 * min(related, 30) + 0.3 * min(google_related, 10)
