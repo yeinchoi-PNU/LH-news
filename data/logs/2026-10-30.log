@@ -1,0 +1,313 @@
+07:36:20 === 2026-10-30 수집 시작 (오늘, github) ===
+07:36:20   구글 · LH 기관 소식 / LH 한국토지주택공사: 45건
+07:36:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:24   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:29   ! 네이버 'LH 한국토지주택공사' 실패: HTTP Error 403: Forbidden
+07:36:29   구글 · LH 기관 소식 / LH 사장: 43건
+07:36:30   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:37   ! 네이버 'LH 사장' 실패: HTTP Error 403: Forbidden
+07:36:38   구글 · LH 기관 소식 / LH 공사 발표: 19건
+07:36:38   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:41   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:46   ! 네이버 'LH 공사 발표' 실패: HTTP Error 403: Forbidden
+07:36:46   구글 · 공공주택·임대 / 공공임대주택: 52건
+07:36:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:52   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:54   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:59   ! 네이버 '공공임대주택' 실패: HTTP Error 403: Forbidden
+07:36:59   구글 · 공공주택·임대 / 공공분양: 48건
+07:37:00   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:03   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:08   ! 네이버 '공공분양' 실패: HTTP Error 403: Forbidden
+07:37:08   구글 · 공공주택·임대 / 신혼희망타운: 11건
+07:37:09   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:11   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:16   ! 네이버 '신혼희망타운' 실패: HTTP Error 403: Forbidden
+07:37:16   구글 · 공공주택·임대 / 매입임대: 15건
+07:37:17   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:25   ! 네이버 '매입임대' 실패: HTTP Error 403: Forbidden
+07:37:25   구글 · 신도시·택지 / 3기 신도시: 78건
+07:37:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:28   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:33   ! 네이버 '3기 신도시' 실패: HTTP Error 403: Forbidden
+07:37:34   구글 · 신도시·택지 / 공공택지: 100건
+07:37:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:42   ! 네이버 '공공택지' 실패: HTTP Error 403: Forbidden
+07:37:42   구글 · 신도시·택지 / 신도시 착공: 26건
+07:37:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:50   ! 네이버 '신도시 착공' 실패: HTTP Error 403: Forbidden
+07:37:50   구글 · 부동산 정책 / 국토교통부 부동산 대책: 54건
+07:37:53   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:55   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:00   ! 네이버 '국토교통부 부동산 대책' 실패: HTTP Error 403: Forbidden
+07:38:00   구글 · 부동산 정책 / 주택공급 대책: 62건
+07:38:01   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:04   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:08   ! 네이버 '주택공급 대책' 실패: HTTP Error 403: Forbidden
+07:38:09   구글 · 부동산 정책 / 부동산 규제: 54건
+07:38:09   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:12   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:17   ! 네이버 '부동산 규제' 실패: HTTP Error 403: Forbidden
+07:38:17   구글 · 부동산 정책 / 주택 대출 규제: 20건
+07:38:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:25   ! 네이버 '주택 대출 규제' 실패: HTTP Error 403: Forbidden
+07:38:26   구글 · 부동산 정책 / 부동산 세제: 31건
+07:38:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:33   ! 네이버 '부동산 세제' 실패: HTTP Error 403: Forbidden
+07:38:34   구글 · 주거복지 / 주거복지: 37건
+07:38:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:42   ! 네이버 '주거복지' 실패: HTTP Error 403: Forbidden
+07:38:42   구글 · 주거복지 / 전세사기 피해: 29건
+07:38:45   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:48   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:52   ! 네이버 '전세사기 피해' 실패: HTTP Error 403: Forbidden
+07:38:53   구글 · 주거복지 / 청년 주거 지원: 19건
+07:38:53   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:56   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:01   ! 네이버 '청년 주거 지원' 실패: HTTP Error 403: Forbidden
+07:39:01   구글 · 도시재생·정비 / 도시재생 뉴딜: 4건
+07:39:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:06   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:11   ! 네이버 '도시재생 뉴딜' 실패: HTTP Error 403: Forbidden
+07:39:11   구글 · 도시재생·정비 / 공공재개발: 9건
+07:39:12   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:15   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:19   ! 네이버 '공공재개발' 실패: HTTP Error 403: Forbidden
+07:39:20   구글 · 도시재생·정비 / 노후계획도시 정비: 23건
+07:39:20   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:23   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:28   ! 네이버 '노후계획도시 정비' 실패: HTTP Error 403: Forbidden
+07:39:28   구글 · 사건·감사·안전 / LH 감사: 14건
+07:39:29   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:32   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:36   ! 네이버 'LH 감사' 실패: HTTP Error 403: Forbidden
+07:39:37   구글 · 사건·감사·안전 / LH 부실시공: 1건
+07:39:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:47   ! 네이버 'LH 부실시공' 실패: HTTP Error 403: Forbidden
+07:39:47   구글 · 사건·감사·안전 / 건설현장 사고 공공: 21건
+07:39:48   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:55   ! 네이버 '건설현장 사고 공공' 실패: HTTP Error 403: Forbidden
+07:39:55   구글 · 공공기관 경영 / 공공기관 경영평가: 24건
+07:39:56   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:59   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:03   ! 네이버 '공공기관 경영평가' 실패: HTTP Error 403: Forbidden
+07:40:04   구글 · 공공기관 경영 / 공공기관 채용: 54건
+07:40:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:07   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:12   ! 네이버 '공공기관 채용' 실패: HTTP Error 403: Forbidden
+07:40:12   구글 · 공공기관 경영 / 공기업 부채: 7건
+07:40:13   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:16   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:21   ! 네이버 '공기업 부채' 실패: HTTP Error 403: Forbidden
+07:40:21   네이버 많이 본 뉴스: 408건 중 관련 29건
+07:40:21 수집 929건 → 스팸·무관 기사 제외 후 684건
+07:40:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:30   ! 시각 검색 '착공 2030년 사설' 실패: HTTP Error 403: Forbidden
+07:40:31   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:38   ! 시각 검색 '착공 2030년 칼럼' 실패: HTTP Error 403: Forbidden
+07:40:38   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:41   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:46   ! 시각 검색 '착공 2030년 기대' 실패: HTTP Error 403: Forbidden
+07:40:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:54   ! 시각 검색 '착공 2030년 환영' 실패: HTTP Error 403: Forbidden
+07:40:55   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:57   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:02   ! 시각 검색 '착공 2030년 우려' 실패: HTTP Error 403: Forbidden
+07:41:03   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:06   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:10   ! 시각 검색 '착공 2030년 비판' 실패: HTTP Error 403: Forbidden
+07:41:11   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:14   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:18   ! 시각 검색 '공공택지 홍지선 사설' 실패: HTTP Error 403: Forbidden
+07:41:19   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:22   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:27   ! 시각 검색 '공공택지 홍지선 칼럼' 실패: HTTP Error 403: Forbidden
+07:41:28   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:32   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:35   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:40   ! 시각 검색 '공공택지 홍지선 환영' 실패: HTTP Error 403: Forbidden
+07:41:40   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:43   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:47   ! 시각 검색 '공공택지 홍지선 우려' 실패: HTTP Error 403: Forbidden
+07:41:48   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:51   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:55   ! 시각 검색 '공공택지 홍지선 비판' 실패: HTTP Error 403: Forbidden
+07:41:56   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:59   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:03   ! 시각 검색 '대통령이라 미혼자녀 사설' 실패: HTTP Error 403: Forbidden
+07:42:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:07   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:13   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:16   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:21   ! 시각 검색 '대통령이라 미혼자녀 기대' 실패: HTTP Error 403: Forbidden
+07:42:21   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:24   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:29   ! 시각 검색 '대통령이라 미혼자녀 환영' 실패: HTTP Error 403: Forbidden
+07:42:30   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:32   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:37   ! 시각 검색 '대통령이라 미혼자녀 우려' 실패: HTTP Error 403: Forbidden
+07:42:38   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:41   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:45   ! 시각 검색 '대통령이라 미혼자녀 비판' 실패: HTTP Error 403: Forbidden
+07:42:46   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:49   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:53   ! 시각 검색 '다주택자 전월세난 사설' 실패: HTTP Error 403: Forbidden
+07:42:54   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:57   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:01   ! 시각 검색 '다주택자 전월세난 칼럼' 실패: HTTP Error 403: Forbidden
+07:43:02   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:05   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:09   ! 시각 검색 '다주택자 전월세난 기대' 실패: HTTP Error 403: Forbidden
+07:43:10   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:13   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:17   ! 시각 검색 '다주택자 전월세난 환영' 실패: HTTP Error 403: Forbidden
+07:43:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:21   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:26   ! 시각 검색 '다주택자 전월세난 우려' 실패: HTTP Error 403: Forbidden
+07:43:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:34   ! 시각 검색 '다주택자 전월세난 비판' 실패: HTTP Error 403: Forbidden
+07:43:35   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:42   ! 시각 검색 '김포아라 김포시장 사설' 실패: HTTP Error 403: Forbidden
+07:43:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:50   ! 시각 검색 '김포아라 김포시장 칼럼' 실패: HTTP Error 403: Forbidden
+07:43:50   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:53   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:58   ! 시각 검색 '김포아라 김포시장 기대' 실패: HTTP Error 403: Forbidden
+07:43:58   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:01   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:06   ! 시각 검색 '김포아라 김포시장 환영' 실패: HTTP Error 403: Forbidden
+07:44:06   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:09   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:14   ! 시각 검색 '김포아라 김포시장 우려' 실패: HTTP Error 403: Forbidden
+07:44:14   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:17   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:22   ! 시각 검색 '김포아라 김포시장 비판' 실패: HTTP Error 403: Forbidden
+07:44:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:30   ! 시각 검색 '예담대 폭증한 사설' 실패: HTTP Error 403: Forbidden
+07:44:31   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:38   ! 시각 검색 '예담대 폭증한 칼럼' 실패: HTTP Error 403: Forbidden
+07:44:38   시각 neg: ‘무규제 대출’의 역습…폭증한 예담대, ‘빚투’로? 증시 폭락 시 위험  ← 핵심어 [예담대 폭증한] 비판 ['폭락'] 긍정 []
+07:44:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:48   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:51   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:56   ! 시각 검색 '예담대 폭증한 환영' 실패: HTTP Error 403: Forbidden
+07:44:57   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:59   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:04   ! 시각 검색 '공공주택지구 김포아라 사설' 실패: HTTP Error 403: Forbidden
+07:45:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:07   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:12   ! 시각 검색 '공공주택지구 김포아라 칼럼' 실패: HTTP Error 403: Forbidden
+07:45:12   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:15   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:29   ! 시각 검색 '공공주택지구 김포아라 환영' 실패: HTTP Error 403: Forbidden
+07:45:30   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:38   ! 시각 검색 '공공주택지구 김포아라 우려' 실패: HTTP Error 403: Forbidden
+07:45:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:41   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:46   ! 시각 검색 '공공주택지구 김포아라 비판' 실패: HTTP Error 403: Forbidden
+07:45:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:49   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:54   ! 시각 검색 '신규택지 국토장관 사설' 실패: HTTP Error 403: Forbidden
+07:45:54   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:57   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:02   ! 시각 검색 '신규택지 국토장관 칼럼' 실패: HTTP Error 403: Forbidden
+07:46:02   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:05   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:09   ! 시각 검색 '신규택지 국토장관 기대' 실패: HTTP Error 403: Forbidden
+07:46:10   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:13   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:17   ! 시각 검색 '신규택지 국토장관 환영' 실패: HTTP Error 403: Forbidden
+07:46:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:21   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:25   ! 시각 검색 '신규택지 국토장관 우려' 실패: HTTP Error 403: Forbidden
+07:46:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:34   ! 시각 검색 '신규택지 국토장관 비판' 실패: HTTP Error 403: Forbidden
+07:46:35   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:46   ! 시각 검색 '김포시 대책 칼럼' 실패: HTTP Error 403: Forbidden
+07:46:46   시각 neg: 김포시, 신규 공공주택지구 조성에 반발…"교통·재정 대책 없는 주택 공급 ← 핵심어 [김포시 대책] 비판 ['반발'] 긍정 []
+07:46:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:55   ! 시각 검색 '김포시 대책 기대' 실패: HTTP Error 403: Forbidden
+07:46:55   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:58   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:03   ! 시각 검색 '김포시 대책 환영' 실패: HTTP Error 403: Forbidden
+07:47:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:06   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:11   ! 시각 검색 '67만가구 닥치고 사설' 실패: HTTP Error 403: Forbidden
+07:47:11   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:14   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:19   ! 시각 검색 '67만가구 닥치고 칼럼' 실패: HTTP Error 403: Forbidden
+07:47:19   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:22   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:27   ! 시각 검색 '67만가구 닥치고 기대' 실패: HTTP Error 403: Forbidden
+07:47:27   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:30   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:35   ! 시각 검색 '67만가구 닥치고 환영' 실패: HTTP Error 403: Forbidden
+07:47:36   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:38   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:45   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:47   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:52   ! 시각 검색 '67만가구 닥치고 비판' 실패: HTTP Error 403: Forbidden
+07:47:53   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:56   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:00   ! 시각 검색 '토스뱅크 안착할까 사설' 실패: HTTP Error 403: Forbidden
+07:48:01   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:04   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:08   ! 시각 검색 '토스뱅크 안착할까 칼럼' 실패: HTTP Error 403: Forbidden
+07:48:09   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:12   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:16   ! 시각 검색 '토스뱅크 안착할까 기대' 실패: HTTP Error 403: Forbidden
+07:48:17   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:25   ! 시각 검색 '토스뱅크 안착할까 환영' 실패: HTTP Error 403: Forbidden
+07:48:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:28   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:33   ! 시각 검색 '토스뱅크 안착할까 우려' 실패: HTTP Error 403: Forbidden
+07:48:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:36   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:41   ! 시각 검색 '토스뱅크 안착할까 비판' 실패: HTTP Error 403: Forbidden
+07:48:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:44   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:49   ! 시각 검색 '때마다 중심 사설' 실패: HTTP Error 403: Forbidden
+07:48:50   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:48:53   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:57   ! 시각 검색 '때마다 중심 칼럼' 실패: HTTP Error 403: Forbidden
+07:48:58   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:49:01   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:49:05   ! 시각 검색 '때마다 중심 기대' 실패: HTTP Error 403: Forbidden
+07:49:06   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:49:09   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:49:13   ! 시각 검색 '때마다 중심 환영' 실패: HTTP Error 403: Forbidden
+07:49:14   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:49:17   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:49:21   ! 시각 검색 '때마다 중심 우려' 실패: HTTP Error 403: Forbidden
+07:49:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:49:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:49:29   ! 시각 검색 '때마다 중심 비판' 실패: HTTP Error 403: Forbidden
+07:49:29 정책 시각: 긍정 0개, 비판 2개 이슈에 붙임
+07:49:29 표본 517건 → 이슈 304개 (LH 관련 90개, 정책 12개), 키워드 ['신도시·택지', 'LH', '공공임대', '노후계획도시', '공공분양', '전월세', '주택공급', '집값']
+07:49:34 국토부 보도자료: 새로 3건, 총 20건
