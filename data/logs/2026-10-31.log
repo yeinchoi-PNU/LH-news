@@ -1,0 +1,299 @@
+07:35:29 === 2026-10-31 수집 시작 (오늘, github) ===
+07:35:30   구글 · LH 기관 소식 / LH 한국토지주택공사: 18건
+07:35:31   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:35:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:35:38   ! 네이버 'LH 한국토지주택공사' 실패: HTTP Error 403: Forbidden
+07:35:38   구글 · LH 기관 소식 / LH 사장: 26건
+07:35:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:35:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:35:47   ! 네이버 'LH 사장' 실패: HTTP Error 403: Forbidden
+07:35:47   구글 · LH 기관 소식 / LH 공사 발표: 17건
+07:35:48   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:35:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:35:55   ! 네이버 'LH 공사 발표' 실패: HTTP Error 403: Forbidden
+07:35:56   구글 · 공공주택·임대 / 공공임대주택: 18건
+07:35:56   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:35:59   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:04   ! 네이버 '공공임대주택' 실패: HTTP Error 403: Forbidden
+07:36:04   구글 · 공공주택·임대 / 공공분양: 21건
+07:36:05   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:10   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:13   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:17   ! 네이버 '공공분양' 실패: HTTP Error 403: Forbidden
+07:36:18   구글 · 공공주택·임대 / 신혼희망타운: 6건
+07:36:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:21   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:25   ! 네이버 '신혼희망타운' 실패: HTTP Error 403: Forbidden
+07:36:26   구글 · 공공주택·임대 / 매입임대: 18건
+07:36:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:34   ! 네이버 '매입임대' 실패: HTTP Error 403: Forbidden
+07:36:35   구글 · 신도시·택지 / 3기 신도시: 48건
+07:36:35   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:38   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:43   ! 네이버 '3기 신도시' 실패: HTTP Error 403: Forbidden
+07:36:43   구글 · 신도시·택지 / 공공택지: 25건
+07:36:44   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:46   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:51   ! 네이버 '공공택지' 실패: HTTP Error 403: Forbidden
+07:36:51   구글 · 신도시·택지 / 신도시 착공: 15건
+07:36:52   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:36:54   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:36:59   ! 네이버 '신도시 착공' 실패: HTTP Error 403: Forbidden
+07:36:59   구글 · 부동산 정책 / 국토교통부 부동산 대책: 21건
+07:37:00   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:02   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:07   ! 네이버 '국토교통부 부동산 대책' 실패: HTTP Error 403: Forbidden
+07:37:07   구글 · 부동산 정책 / 주택공급 대책: 32건
+07:37:08   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:11   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:16   ! 네이버 '주택공급 대책' 실패: HTTP Error 403: Forbidden
+07:37:16   구글 · 부동산 정책 / 부동산 규제: 51건
+07:37:17   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:19   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:24   ! 네이버 '부동산 규제' 실패: HTTP Error 403: Forbidden
+07:37:24   구글 · 부동산 정책 / 주택 대출 규제: 38건
+07:37:25   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:28   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:32   ! 네이버 '주택 대출 규제' 실패: HTTP Error 403: Forbidden
+07:37:33   구글 · 부동산 정책 / 부동산 세제: 24건
+07:37:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:41   ! 네이버 '부동산 세제' 실패: HTTP Error 403: Forbidden
+07:37:42   구글 · 주거복지 / 주거복지: 47건
+07:37:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:37:50   ! 네이버 '주거복지' 실패: HTTP Error 403: Forbidden
+07:37:50   구글 · 주거복지 / 전세사기 피해: 8건
+07:37:52   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:37:55   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:00   ! 네이버 '전세사기 피해' 실패: HTTP Error 403: Forbidden
+07:38:00   구글 · 주거복지 / 청년 주거 지원: 19건
+07:38:01   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:03   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:08   ! 네이버 '청년 주거 지원' 실패: HTTP Error 403: Forbidden
+07:38:08   구글 · 도시재생·정비 / 도시재생 뉴딜: 4건
+07:38:09   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:12   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:17   ! 네이버 '도시재생 뉴딜' 실패: HTTP Error 403: Forbidden
+07:38:17   구글 · 도시재생·정비 / 공공재개발: 23건
+07:38:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:25   ! 네이버 '공공재개발' 실패: HTTP Error 403: Forbidden
+07:38:25   구글 · 도시재생·정비 / 노후계획도시 정비: 22건
+07:38:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:34   ! 네이버 '노후계획도시 정비' 실패: HTTP Error 403: Forbidden
+07:38:34   구글 · 사건·감사·안전 / LH 감사: 5건
+07:38:35   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:38   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:42   ! 네이버 'LH 감사' 실패: HTTP Error 403: Forbidden
+07:38:43   구글 · 사건·감사·안전 / LH 부실시공: 0건
+07:38:43   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:46   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:51   ! 네이버 'LH 부실시공' 실패: HTTP Error 403: Forbidden
+07:38:51   구글 · 사건·감사·안전 / 건설현장 사고 공공: 19건
+07:38:52   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:38:54   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:38:59   ! 네이버 '건설현장 사고 공공' 실패: HTTP Error 403: Forbidden
+07:39:00   구글 · 공공기관 경영 / 공공기관 경영평가: 13건
+07:39:00   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:03   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:08   ! 네이버 '공공기관 경영평가' 실패: HTTP Error 403: Forbidden
+07:39:08   구글 · 공공기관 경영 / 공공기관 채용: 24건
+07:39:08   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:11   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:16   ! 네이버 '공공기관 채용' 실패: HTTP Error 403: Forbidden
+07:39:16   구글 · 공공기관 경영 / 공기업 부채: 3건
+07:39:17   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:29   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:34   ! 네이버 '공기업 부채' 실패: HTTP Error 403: Forbidden
+07:39:35   네이버 많이 본 뉴스: 411건 중 관련 21건
+07:39:35 수집 586건 → 스팸·무관 기사 제외 후 430건
+07:39:35   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:38   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:43   ! 시각 검색 '제안 협의체 사설' 실패: HTTP Error 403: Forbidden
+07:39:43   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:47   시각 pos: 국힘, 민주당에 ‘3+3 부동산협의체’ 제안…"주택공급·전월세 안정 대책 ← 핵심어 [제안 협의체] 비판 [] 긍정 ['안정']
+07:39:48   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:39:51   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:39:57   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:00   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:04   ! 시각 검색 '제안 협의체 비판' 실패: HTTP Error 403: Forbidden
+07:40:05   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:08   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:12   ! 시각 검색 '착공 홍지선 사설' 실패: HTTP Error 403: Forbidden
+07:40:13   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:16   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:20   ! 시각 검색 '착공 홍지선 칼럼' 실패: HTTP Error 403: Forbidden
+07:40:20   시각 pos: 홍지선 국토부 장관 “8·13 대책 후속 조치 속도…수도권 7.2만가구  ← 핵심어 [착공 홍지선] 비판 [] 긍정 ['지원']
+07:40:21   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:24   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:28   ! 시각 검색 '착공 홍지선 우려' 실패: HTTP Error 403: Forbidden
+07:40:29   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:32   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:36   ! 시각 검색 '착공 홍지선 비판' 실패: HTTP Error 403: Forbidden
+07:40:37   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:40   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:45   ! 시각 검색 '연내 서울시 사설' 실패: HTTP Error 403: Forbidden
+07:40:45   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:48   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:40:53   ! 시각 검색 '연내 서울시 칼럼' 실패: HTTP Error 403: Forbidden
+07:40:53   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:40:56   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:01   ! 시각 검색 '연내 서울시 기대' 실패: HTTP Error 403: Forbidden
+07:41:02   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:04   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:09   ! 시각 검색 '연내 서울시 환영' 실패: HTTP Error 403: Forbidden
+07:41:10   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:13   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:17   ! 시각 검색 '연내 서울시 우려' 실패: HTTP Error 403: Forbidden
+07:41:18   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:20   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:25   ! 시각 검색 '연내 서울시 비판' 실패: HTTP Error 403: Forbidden
+07:41:26   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:28   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:33   ! 시각 검색 '유예되나 스트레스 사설' 실패: HTTP Error 403: Forbidden
+07:41:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:41   ! 시각 검색 '유예되나 스트레스 칼럼' 실패: HTTP Error 403: Forbidden
+07:41:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:49   ! 시각 검색 '유예되나 스트레스 기대' 실패: HTTP Error 403: Forbidden
+07:41:50   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:41:53   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:41:57   ! 시각 검색 '유예되나 스트레스 환영' 실패: HTTP Error 403: Forbidden
+07:41:58   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:00   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:05   ! 시각 검색 '유예되나 스트레스 우려' 실패: HTTP Error 403: Forbidden
+07:42:06   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:09   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:13   ! 시각 검색 '유예되나 스트레스 비판' 실패: HTTP Error 403: Forbidden
+07:42:14   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:16   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:21   ! 시각 검색 '신규택지 착공 사설' 실패: HTTP Error 403: Forbidden
+07:42:22   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:29   ! 시각 검색 '신규택지 착공 칼럼' 실패: HTTP Error 403: Forbidden
+07:42:29   시각 neg: 9월 수도권 착공 43% 폭락 ‘공급 절벽 가시화’...7만 6700가구 ← 핵심어 [신규택지 착공] 비판 ['폭락'] 긍정 []
+07:42:30   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:33   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:38   ! 시각 검색 '신규택지 착공 기대' 실패: HTTP Error 403: Forbidden
+07:42:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:41   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:46   ! 시각 검색 '신규택지 착공 환영' 실패: HTTP Error 403: Forbidden
+07:42:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:49   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:42:54   ! 시각 검색 '이노비전 한수원 사설' 실패: HTTP Error 403: Forbidden
+07:42:55   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:42:58   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:02   ! 시각 검색 '이노비전 한수원 칼럼' 실패: HTTP Error 403: Forbidden
+07:43:03   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:06   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:11   ! 시각 검색 '이노비전 한수원 기대' 실패: HTTP Error 403: Forbidden
+07:43:13   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:15   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:20   ! 시각 검색 '이노비전 한수원 우려' 실패: HTTP Error 403: Forbidden
+07:43:23   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:30   ! 시각 검색 '서울민간정비 국토장관 사설' 실패: HTTP Error 403: Forbidden
+07:43:31   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:34   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:38   ! 시각 검색 '서울민간정비 국토장관 칼럼' 실패: HTTP Error 403: Forbidden
+07:43:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:46   ! 시각 검색 '서울민간정비 국토장관 기대' 실패: HTTP Error 403: Forbidden
+07:43:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:43:54   ! 시각 검색 '서울민간정비 국토장관 환영' 실패: HTTP Error 403: Forbidden
+07:43:55   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:43:57   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:02   ! 시각 검색 '서울민간정비 국토장관 우려' 실패: HTTP Error 403: Forbidden
+07:44:03   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:06   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:10   ! 시각 검색 '서울민간정비 국토장관 비판' 실패: HTTP Error 403: Forbidden
+07:44:11   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:14   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:19   ! 시각 검색 'Conduit 세무법인HKL 사설' 실패: HTTP Error 403: Forbidden
+07:44:19   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:22   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:27   ! 시각 검색 'Conduit 세무법인HKL 칼럼' 실패: HTTP Error 403: Forbidden
+07:44:29   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:41   ! 시각 검색 'Conduit 세무법인HKL 우려' 실패: HTTP Error 403: Forbidden
+07:44:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:50   ! 시각 검색 'Conduit 세무법인HKL 비판' 실패: HTTP Error 403: Forbidden
+07:44:50   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:44:53   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:44:59   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:02   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:07   ! 시각 검색 '부동산거래법 개정안 칼럼' 실패: HTTP Error 403: Forbidden
+07:45:08   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:10   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:15   ! 시각 검색 '부동산거래법 개정안 기대' 실패: HTTP Error 403: Forbidden
+07:45:16   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:18   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:23   ! 시각 검색 '부동산거래법 개정안 환영' 실패: HTTP Error 403: Forbidden
+07:45:24   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:26   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:31   ! 시각 검색 '부동산거래법 개정안 우려' 실패: HTTP Error 403: Forbidden
+07:45:34   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:37   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:41   ! 시각 검색 '국토부 용적률 사설' 실패: HTTP Error 403: Forbidden
+07:45:42   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:45   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:50   ! 시각 검색 '국토부 용적률 칼럼' 실패: HTTP Error 403: Forbidden
+07:45:50   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:45:53   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:45:58   ! 시각 검색 '국토부 용적률 기대' 실패: HTTP Error 403: Forbidden
+07:45:59   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:01   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:06   ! 시각 검색 '국토부 용적률 환영' 실패: HTTP Error 403: Forbidden
+07:46:07   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:09   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:14   ! 시각 검색 '국토부 용적률 우려' 실패: HTTP Error 403: Forbidden
+07:46:14   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:17   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:22   ! 시각 검색 '국토부 용적률 비판' 실패: HTTP Error 403: Forbidden
+07:46:23   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:25   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:30   ! 시각 검색 '민간정비사업 3만1천가구 사설' 실패: HTTP Error 403: Forbidden
+07:46:31   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:34   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:39   ! 시각 검색 '민간정비사업 3만1천가구 칼럼' 실패: HTTP Error 403: Forbidden
+07:46:39   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:42   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:47   ! 시각 검색 '민간정비사업 3만1천가구 기대' 실패: HTTP Error 403: Forbidden
+07:46:47   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:50   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:46:56   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:46:59   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:04   ! 시각 검색 '민간정비사업 3만1천가구 우려' 실패: HTTP Error 403: Forbidden
+07:47:04   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:07   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:12   ! 시각 검색 '민간정비사업 3만1천가구 비판' 실패: HTTP Error 403: Forbidden
+07:47:13   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:15   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:20   ! 시각 검색 '상계동 착공 사설' 실패: HTTP Error 403: Forbidden
+07:47:21   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:23   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:28   ! 시각 검색 '상계동 착공 칼럼' 실패: HTTP Error 403: Forbidden
+07:47:29   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:31   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:36   ! 시각 검색 '상계동 착공 기대' 실패: HTTP Error 403: Forbidden
+07:47:36   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:39   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:44   ! 시각 검색 '상계동 착공 환영' 실패: HTTP Error 403: Forbidden
+07:47:44   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:47   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:47:52   ! 시각 검색 '상계동 착공 우려' 실패: HTTP Error 403: Forbidden
+07:47:52   … 접속 실패(HTTP Error 403: Forbidden), 2초 후 다시 시도
+07:47:55   … 접속 실패(HTTP Error 403: Forbidden), 4초 후 다시 시도
+07:48:00   ! 시각 검색 '상계동 착공 비판' 실패: HTTP Error 403: Forbidden
+07:48:00 정책 시각: 긍정 2개, 비판 1개 이슈에 붙임
+07:48:00 표본 345건 → 이슈 245개 (LH 관련 38개, 정책 12개), 키워드 ['신도시·택지', 'LH', '청약·분양', '공공임대', '주택공급', '재건축·재개발', '노후계획도시', '집값']
+07:48:05 국토부 보도자료: 새로 2건, 총 22건
